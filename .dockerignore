@@ -1,0 +1,6 @@
+/frontend/node_modules
+/frontend/build
+/tmp
+/proxymanager
+/proxymanager.db 
+/ca

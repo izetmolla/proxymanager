@@ -1,0 +1,1 @@
+import{x as t,j as e}from"./index-B8FHcfP5.js";const a=t("/_authenticated/upstreams/")({component:o});function o(){return e.jsx("div",{children:'Hello "/_authenticated/upstreams/"!'})}export{a as Route};

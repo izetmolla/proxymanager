@@ -1,0 +1,1 @@
+import{x as t,j as e}from"./index-B8FHcfP5.js";const i=t("/_authenticated/api-settings/")({component:n});function n(){return e.jsx("div",{children:'Hello "/_authenticated/api-settings/"!'})}export{i as Route};

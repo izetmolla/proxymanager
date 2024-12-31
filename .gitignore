@@ -1,0 +1,4 @@
+/node_modules
+go.sum
+/tmp
+/frontend/node_modules
