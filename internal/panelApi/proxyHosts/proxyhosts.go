@@ -77,7 +77,7 @@ func CreateProxyHost(c *fiber.Ctx) error {
 		return c.JSON(utils.Em(err))
 	}
 
-	ph, err := models.GetProxyHostitemByID(config.DB, "")
+	ph, err := models.GetProxyHostitemByID(config.DB, "", body.Domains[0])
 	if err != nil {
 		return c.JSON(utils.Em(err))
 	}

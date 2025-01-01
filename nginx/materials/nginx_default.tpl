@@ -8,12 +8,12 @@ server {
 	set $port "80";
 
 	#server_name localhost-nginx-proxy-manager;
-	server_name _;
+	server_name localhost;
 	access_log {{.LogsPath}}/fallback_access.log standard;
 	error_log {{.LogsPath}}/fallback_error.log warn;
-	include conf.d/include/assets.conf;
-	include conf.d/include/block-exploits.conf;
-	include conf.d/include/letsencrypt-acme-challenge.conf;
+	#include conf.d/include/assets.conf;
+	#include conf.d/include/block-exploits.conf;
+	#include conf.d/include/letsencrypt-acme-challenge.conf;
 
 	location / {
 		index index.html;
@@ -33,7 +33,7 @@ server {
 	server_name localhost;
 	access_log {{.LogsPath}}/fallback_access.log standard;
 	error_log /dev/null crit;
-	include conf.d/include/ssl-ciphers.conf;
+	#include conf.d/include/ssl-ciphers.conf;
 	ssl_reject_handshake on;
 
 	return 444;

@@ -8,6 +8,7 @@ import (
 	"github.com/izetmolla/proxymanager/internal/panelApi/dashboard"
 	"github.com/izetmolla/proxymanager/internal/panelApi/nginxconfig"
 	proxyhosts "github.com/izetmolla/proxymanager/internal/panelApi/proxyHosts"
+	"github.com/izetmolla/proxymanager/internal/panelApi/sslkeys"
 	"github.com/izetmolla/proxymanager/internal/panelApi/users"
 
 	jwtware "github.com/gofiber/contrib/jwt"
@@ -37,6 +38,8 @@ func handlePanelAPI(app *fiber.App) *fiber.App {
 	api.Get("/nginxconfig/getdata", nginxconfig.GetNginxConfigData)
 	api.Post("/nginxconfig/save", nginxconfig.SaveNginxConfigFile)
 	api.Get("/nginxconfig/restart", nginxconfig.RestartNginx)
+
+	api.Get("/ssl/getdata", sslkeys.GetSslKeysList)
 
 	// Catch all other routes
 	api.All("*", func(c *fiber.Ctx) error {

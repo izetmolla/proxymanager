@@ -15,6 +15,8 @@ import { type SidebarData } from '../types'
 import { SiNginx } from "react-icons/si";
 import { AiTwotoneApi } from "react-icons/ai";
 import { Command } from '@/components/ui/command';
+import { BsFiletypeHtml } from "react-icons/bs";
+
 
 
 export const sidebarData: SidebarData = {
@@ -89,6 +91,12 @@ export const sidebarData: SidebarData = {
                     title: 'Nginx Config Settings',
                     url: '/nginx-settings',
                     icon: SiNginx,
+                },
+
+                {
+                    title: 'Static Files',
+                    url: '/templates',
+                    icon: BsFiletypeHtml,
                 },
                 {
                     title: 'General',

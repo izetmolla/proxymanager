@@ -1,5 +1,5 @@
 # run nginx in foreground
-#daemon off;
+daemon off;
 pid /run/nginx.pid;
 user root;
 
@@ -45,6 +45,11 @@ http {
 	#proxy_cache_path              /var/lib/nginx/cache/public  levels=1:2 keys_zone=public-cache:30m max_size=192m;
 	#proxy_cache_path              /var/lib/nginx/cache/private levels=1:2 keys_zone=private-cache:5m max_size=1024m;	
 
+	error_page                      403 /error/404/index.html;
+	error_page                      404 /error/404/index.html;
+	error_page                      410 /error/410/index.html;
+	error_page                      500 501 502 503 504 505 /error/50x/index.html;
+
 
 	# Log format and fallback log file
 	include {{.NginxPath}}/conf.d/include/log.conf;
@@ -59,14 +64,14 @@ http {
 	# Real IP Determination
 
 	# Local subnets:
-	set_real_ip_from 10.0.0.0/8;
-	set_real_ip_from 172.16.0.0/12; # Includes Docker subnet
-	set_real_ip_from 192.168.0.0/16;
+	#set_real_ip_from 10.0.0.0/8;
+	#set_real_ip_from 172.16.0.0/12; # Includes Docker subnet
+	#set_real_ip_from 192.168.0.0/16;
 	# NPM generated CDN ip ranges:
-	include conf.d/include/ip_ranges.conf;
+	#include conf.d/include/ip_ranges.conf;
 	# always put the following 2 lines after ip subnets:
-	real_ip_header X-Real-IP;
-	real_ip_recursive on;
+	#real_ip_header X-Real-IP;
+	#real_ip_recursive on;
 
 	# Custom
 	include {{.ConfigPath}}/custom/http_top[.]conf;

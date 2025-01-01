@@ -31,6 +31,9 @@ const AuthenticatedUptimeIndexLazyImport = createFileRoute(
 const AuthenticatedUpstreamsIndexLazyImport = createFileRoute(
   '/_authenticated/upstreams/',
 )()
+const AuthenticatedTemplatesIndexLazyImport = createFileRoute(
+  '/_authenticated/templates/',
+)()
 const AuthenticatedSslManagerIndexLazyImport = createFileRoute(
   '/_authenticated/ssl-manager/',
 )()
@@ -57,6 +60,9 @@ const AuthenticatedAccountIndexLazyImport = createFileRoute(
 )()
 const AuthenticatedAccessListIndexLazyImport = createFileRoute(
   '/_authenticated/access-list/',
+)()
+const AuthenticatedSslManagerIdIndexLazyImport = createFileRoute(
+  '/_authenticated/ssl-manager/$id/',
 )()
 
 // Create/Update Routes
@@ -115,6 +121,15 @@ const AuthenticatedUpstreamsIndexLazyRoute =
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any).lazy(() =>
     import('./routes/_authenticated/upstreams/index.lazy').then((d) => d.Route),
+  )
+
+const AuthenticatedTemplatesIndexLazyRoute =
+  AuthenticatedTemplatesIndexLazyImport.update({
+    id: '/templates/',
+    path: '/templates/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/templates/index.lazy').then((d) => d.Route),
   )
 
 const AuthenticatedSslManagerIndexLazyRoute =
@@ -210,6 +225,17 @@ const AuthenticatedAccessListIndexLazyRoute =
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any).lazy(() =>
     import('./routes/_authenticated/access-list/index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AuthenticatedSslManagerIdIndexLazyRoute =
+  AuthenticatedSslManagerIdIndexLazyImport.update({
+    id: '/ssl-manager/$id/',
+    path: '/ssl-manager/$id/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/ssl-manager/$id/index.lazy').then(
       (d) => d.Route,
     ),
   )
@@ -323,6 +349,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedSslManagerIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
+    '/_authenticated/templates/': {
+      id: '/_authenticated/templates/'
+      path: '/templates'
+      fullPath: '/templates'
+      preLoaderRoute: typeof AuthenticatedTemplatesIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
     '/_authenticated/upstreams/': {
       id: '/_authenticated/upstreams/'
       path: '/upstreams'
@@ -342,6 +375,13 @@ declare module '@tanstack/react-router' {
       path: '/users'
       fullPath: '/users'
       preLoaderRoute: typeof AuthenticatedUsersIndexLazyImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/ssl-manager/$id/': {
+      id: '/_authenticated/ssl-manager/$id/'
+      path: '/ssl-manager/$id'
+      fullPath: '/ssl-manager/$id'
+      preLoaderRoute: typeof AuthenticatedSslManagerIdIndexLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/proxy-manager/$id/$nav/': {
@@ -367,9 +407,11 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedNotificationsSettingsIndexLazyRoute: typeof AuthenticatedNotificationsSettingsIndexLazyRoute
   AuthenticatedProxyManagerIndexLazyRoute: typeof AuthenticatedProxyManagerIndexLazyRoute
   AuthenticatedSslManagerIndexLazyRoute: typeof AuthenticatedSslManagerIndexLazyRoute
+  AuthenticatedTemplatesIndexLazyRoute: typeof AuthenticatedTemplatesIndexLazyRoute
   AuthenticatedUpstreamsIndexLazyRoute: typeof AuthenticatedUpstreamsIndexLazyRoute
   AuthenticatedUptimeIndexLazyRoute: typeof AuthenticatedUptimeIndexLazyRoute
   AuthenticatedUsersIndexLazyRoute: typeof AuthenticatedUsersIndexLazyRoute
+  AuthenticatedSslManagerIdIndexLazyRoute: typeof AuthenticatedSslManagerIdIndexLazyRoute
   AuthenticatedProxyManagerIdNavIndexRoute: typeof AuthenticatedProxyManagerIdNavIndexRoute
 }
 
@@ -390,9 +432,12 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedProxyManagerIndexLazyRoute:
     AuthenticatedProxyManagerIndexLazyRoute,
   AuthenticatedSslManagerIndexLazyRoute: AuthenticatedSslManagerIndexLazyRoute,
+  AuthenticatedTemplatesIndexLazyRoute: AuthenticatedTemplatesIndexLazyRoute,
   AuthenticatedUpstreamsIndexLazyRoute: AuthenticatedUpstreamsIndexLazyRoute,
   AuthenticatedUptimeIndexLazyRoute: AuthenticatedUptimeIndexLazyRoute,
   AuthenticatedUsersIndexLazyRoute: AuthenticatedUsersIndexLazyRoute,
+  AuthenticatedSslManagerIdIndexLazyRoute:
+    AuthenticatedSslManagerIdIndexLazyRoute,
   AuthenticatedProxyManagerIdNavIndexRoute:
     AuthenticatedProxyManagerIdNavIndexRoute,
 }
@@ -415,9 +460,11 @@ export interface FileRoutesByFullPath {
   '/notifications-settings': typeof AuthenticatedNotificationsSettingsIndexLazyRoute
   '/proxy-manager': typeof AuthenticatedProxyManagerIndexLazyRoute
   '/ssl-manager': typeof AuthenticatedSslManagerIndexLazyRoute
+  '/templates': typeof AuthenticatedTemplatesIndexLazyRoute
   '/upstreams': typeof AuthenticatedUpstreamsIndexLazyRoute
   '/uptime': typeof AuthenticatedUptimeIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
+  '/ssl-manager/$id': typeof AuthenticatedSslManagerIdIndexLazyRoute
   '/proxy-manager/$id/$nav': typeof AuthenticatedProxyManagerIdNavIndexRoute
 }
 
@@ -435,9 +482,11 @@ export interface FileRoutesByTo {
   '/notifications-settings': typeof AuthenticatedNotificationsSettingsIndexLazyRoute
   '/proxy-manager': typeof AuthenticatedProxyManagerIndexLazyRoute
   '/ssl-manager': typeof AuthenticatedSslManagerIndexLazyRoute
+  '/templates': typeof AuthenticatedTemplatesIndexLazyRoute
   '/upstreams': typeof AuthenticatedUpstreamsIndexLazyRoute
   '/uptime': typeof AuthenticatedUptimeIndexLazyRoute
   '/users': typeof AuthenticatedUsersIndexLazyRoute
+  '/ssl-manager/$id': typeof AuthenticatedSslManagerIdIndexLazyRoute
   '/proxy-manager/$id/$nav': typeof AuthenticatedProxyManagerIdNavIndexRoute
 }
 
@@ -457,9 +506,11 @@ export interface FileRoutesById {
   '/_authenticated/notifications-settings/': typeof AuthenticatedNotificationsSettingsIndexLazyRoute
   '/_authenticated/proxy-manager/': typeof AuthenticatedProxyManagerIndexLazyRoute
   '/_authenticated/ssl-manager/': typeof AuthenticatedSslManagerIndexLazyRoute
+  '/_authenticated/templates/': typeof AuthenticatedTemplatesIndexLazyRoute
   '/_authenticated/upstreams/': typeof AuthenticatedUpstreamsIndexLazyRoute
   '/_authenticated/uptime/': typeof AuthenticatedUptimeIndexLazyRoute
   '/_authenticated/users/': typeof AuthenticatedUsersIndexLazyRoute
+  '/_authenticated/ssl-manager/$id/': typeof AuthenticatedSslManagerIdIndexLazyRoute
   '/_authenticated/proxy-manager/$id/$nav/': typeof AuthenticatedProxyManagerIdNavIndexRoute
 }
 
@@ -480,9 +531,11 @@ export interface FileRouteTypes {
     | '/notifications-settings'
     | '/proxy-manager'
     | '/ssl-manager'
+    | '/templates'
     | '/upstreams'
     | '/uptime'
     | '/users'
+    | '/ssl-manager/$id'
     | '/proxy-manager/$id/$nav'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -499,9 +552,11 @@ export interface FileRouteTypes {
     | '/notifications-settings'
     | '/proxy-manager'
     | '/ssl-manager'
+    | '/templates'
     | '/upstreams'
     | '/uptime'
     | '/users'
+    | '/ssl-manager/$id'
     | '/proxy-manager/$id/$nav'
   id:
     | '__root__'
@@ -519,9 +574,11 @@ export interface FileRouteTypes {
     | '/_authenticated/notifications-settings/'
     | '/_authenticated/proxy-manager/'
     | '/_authenticated/ssl-manager/'
+    | '/_authenticated/templates/'
     | '/_authenticated/upstreams/'
     | '/_authenticated/uptime/'
     | '/_authenticated/users/'
+    | '/_authenticated/ssl-manager/$id/'
     | '/_authenticated/proxy-manager/$id/$nav/'
   fileRoutesById: FileRoutesById
 }
@@ -569,9 +626,11 @@ export const routeTree = rootRoute
         "/_authenticated/notifications-settings/",
         "/_authenticated/proxy-manager/",
         "/_authenticated/ssl-manager/",
+        "/_authenticated/templates/",
         "/_authenticated/upstreams/",
         "/_authenticated/uptime/",
         "/_authenticated/users/",
+        "/_authenticated/ssl-manager/$id/",
         "/_authenticated/proxy-manager/$id/$nav/"
       ]
     },
@@ -624,6 +683,10 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/ssl-manager/index.lazy.tsx",
       "parent": "/_authenticated"
     },
+    "/_authenticated/templates/": {
+      "filePath": "_authenticated/templates/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
     "/_authenticated/upstreams/": {
       "filePath": "_authenticated/upstreams/index.lazy.tsx",
       "parent": "/_authenticated"
@@ -634,6 +697,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/users/": {
       "filePath": "_authenticated/users/index.lazy.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/ssl-manager/$id/": {
+      "filePath": "_authenticated/ssl-manager/$id/index.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/proxy-manager/$id/$nav/": {

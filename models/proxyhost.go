@@ -52,10 +52,13 @@ func GetProxyHostByID(db *gorm.DB, id string) (phost ProxyHost, err error) {
 	return phost, nil
 }
 
-func GetProxyHostitemByID(db *gorm.DB, id string) (phost ProxyHost, err error) {
+func GetProxyHostitemByID(db *gorm.DB, id, domainName string) (phost ProxyHost, err error) {
 	if res := db.Model(&ProxyHost{}).Where("id = ?", id).First(&phost); res.Error != nil {
 		if res.Error == gorm.ErrRecordNotFound {
 			phost.ID = id
+			phost.Ssl = SslKey{
+				Name: fmt.Sprintf("%s - SSL Keys", domainName),
+			}
 			if err := db.Save(&phost).Error; err != nil {
 				return phost, err
 			}

@@ -18,7 +18,7 @@ func Update(db *gorm.DB, ng *nginx.Nginx, args []string) (string, error) {
 	if id, ok := ct["id"]; ok {
 		ph.ID = id.(string)
 	}
-	ph, err := models.GetProxyHostitemByID(db, ph.ID)
+	ph, err := models.GetProxyHostitemByID(db, ph.ID, "")
 	if err != nil {
 		return "", err
 	}
