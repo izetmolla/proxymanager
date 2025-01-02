@@ -24,6 +24,8 @@ type NginxDefaultsTemplateTypes struct {
 	ConfigPath string `json:"config_path"`
 	Disabled   bool   `json:"disabled"`
 	EnableIpv6 bool   `json:"enable_ipv6"`
+	NoRespone  bool   `json:"no_respone"`
+	RedirectTo string `json:"redirect_to"`
 }
 
 func SaveNginxDefaultsTemplate(data *NginxDefaultsTemplateTypes, filePath string) error {
@@ -31,6 +33,18 @@ func SaveNginxDefaultsTemplate(data *NginxDefaultsTemplateTypes, filePath string
 		return err
 	}
 	return createFromBinary(&Materials, "nginx_default.tpl", filePath, data)
+}
+
+type NginxStatusTemplateTypes struct {
+	Address string `json:"address"`
+	Port    int    `json:"port"`
+}
+
+func SaveNginxStatusTemplate(data *NginxStatusTemplateTypes, filePath string) error {
+	if _, err := checkOrCreateSystemFile(filePath); err != nil {
+		return err
+	}
+	return createFromBinary(&Materials, "nginx_status.tpl", filePath, data)
 }
 
 func SaveNginxHtml404Template(data any, filePath string) error {

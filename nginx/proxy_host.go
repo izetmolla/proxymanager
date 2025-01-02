@@ -71,5 +71,21 @@ func (ng *Nginx) DeleteProxyHost(ID string) (err error) {
 	if err := removeLineFromFile(ng.MainFilePath, mainFileLine(hostPath)); err != nil {
 		return err
 	}
+	if _, err := ng.Reload(); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (ng *Nginx) DisableProxyHost(ID string, domsina []string) (err error) {
+	hostPath := filepath.Join(ng.ConfigPath, "hosts", ID)
+	if err := removeLineFromFile(ng.MainFilePath, mainFileLine(hostPath)); err != nil {
+		return err
+	}
+	if _, err := ng.Reload(); err != nil {
+		return err
+	}
+
 	return nil
 }

@@ -40,6 +40,7 @@ func handlePanelAPI(app *fiber.App) *fiber.App {
 	api.Get("/nginxconfig/restart", nginxconfig.RestartNginx)
 
 	api.Get("/ssl/getdata", sslkeys.GetSslKeysList)
+	api.Post("/ssl/create", sslkeys.CreateSslKey)
 
 	// Catch all other routes
 	api.All("*", func(c *fiber.Ctx) error {

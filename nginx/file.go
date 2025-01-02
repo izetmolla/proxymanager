@@ -169,6 +169,9 @@ func ReadFromFile(filePath string) (string, error) {
 }
 
 func WriteToFile(filePath string, content string) error {
+	if _,err:= checkOrCreateSystemFile(filePath); err!=nil{
+		return err
+	}
 	file, err := os.Create(filePath)
 	if err != nil {
 		return err

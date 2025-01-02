@@ -15,10 +15,10 @@ import { Button } from "@/components/ui/button";
 import { SslManagerListDataTableToolbar } from "./components/data-table-toolbar";
 import SslManagerListContextProvider, { SslManagerListDialogType } from "./sslmanager-context";
 import useDialogState from "@/hooks/use-dialog-state";
-import { CreateProxyHost } from "./components/create-proxyhost-dialog";
 import { IconPlus } from "@tabler/icons-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { getSslList } from "@/services/ssl.service";
+import { CreateSslKey } from "./components/create-ssl-key";
 
 
 
@@ -42,7 +42,7 @@ const SslManagerList: FC<SslListProps> = ({ id }) => {
     const { filters, pagination, setFilters } = useFilters(id);
     const sorting = sortByToState(filters.sortBy);
 
-    const { isLoading, error, data } = useQuery({
+    const { isLoading, error, data, refetch } = useQuery({
         queryKey: ["sslList", filters],
         queryFn: () => getSslList(filters).then((res) => res.data),
         placeholderData: keepPreviousData,
@@ -86,17 +86,18 @@ const SslManagerList: FC<SslListProps> = ({ id }) => {
                 bareadcrumb={meta.bareadcrumb}
                 rightComponent={
                     <Button className='space-x-1' onClick={() => setOpen('create')}>
-                        <span>Add Proxy</span> <IconPlus size={18} />
+                        <IconPlus size={18} /> <span>Create SSL</span>
                     </Button>
                 }
             >
                 <SslManagerListDataTableToolbar table={table} />
                 <DataTable table={table} />
             </Main>
-            <CreateProxyHost
+            <CreateSslKey
                 key='sslmanager-create'
                 open={open === 'create'}
                 onOpenChange={() => setOpen('create')}
+                onCreated={() => refetch()}
             />
             {currentRow && (
                 <>

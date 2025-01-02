@@ -14,3 +14,7 @@ const (
 func checkForSelfSSL(fps, domain string) bool {
 	return existOnDisk(fps, "ssl", "auto", fmt.Sprintf("%s.crt", domain))
 }
+
+func GenerateSelfSSL(domain, fp, org string) error {
+	return generateSelfSSL(domain, fp, org)
+}

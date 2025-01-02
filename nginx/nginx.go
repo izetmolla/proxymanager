@@ -88,6 +88,14 @@ func Open(opt *NginxInitOptions) (*Nginx, error) {
 			fmt.Println("cant create localhost ssl")
 		}
 	}
+
+	if err := SaveNginxStatusTemplate(&NginxStatusTemplateTypes{
+		Address: "localhost",
+		Port:    8088,
+	}, filepath.Join(ng.NginxPath, "conf.d", "status.conf")); err != nil {
+		return &ng, err
+	}
+
 	if err := SaveDefaultConfDTemplate(map[string]string{
 		"LogsPath":   ng.LogsPath,
 		"ConfigPath": ng.ConfigPath,

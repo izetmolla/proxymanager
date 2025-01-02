@@ -1,5 +1,5 @@
 server {
-    listen {{.host}}:{{.port}};
+    listen {{.Address}}:{{.Port}};
     server_name localhost;
 
     location /nginx_status {
