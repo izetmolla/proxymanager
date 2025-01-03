@@ -6,8 +6,8 @@ server{
     {{ if .ProxyHostSSL.Enabled }}
     listen 443 ssl{{ if .ProxyHostSSL.HTTP2 }} http2{{ end }};
     listen [::]:443 ssl{{ if .ProxyHostSSL.HTTP2 }} http2{{ end }};
-	ssl_certificate {{.HostPath}}/ssl/{{ .ProxyHostSSL.Certificate }};
-    ssl_certificate_key {{.HostPath}}/ssl/{{ .ProxyHostSSL.CertificateKey }};
+	ssl_certificate {{.SslPath}}/{{ .ProxyHostSSL.Certificate }};
+    ssl_certificate_key {{.SslPath}}/{{ .ProxyHostSSL.CertificateKey }};
     {{ if  .ProxyHostSSL.Hsts }}# HSTS (ngx_http_headers_module is required) (63072000 seconds = 2 years)
     add_header Strict-Transport-Security $hsts_header always;{{end}}
     {{ if  .ProxyHostSSL.ForceHttps }}

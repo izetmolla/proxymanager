@@ -12,9 +12,13 @@ const (
 )
 
 func checkForSelfSSL(fps, domain string) bool {
-	return existOnDisk(fps, "ssl", "auto", fmt.Sprintf("%s.crt", domain))
+	return existOnDisk(fps, "auto", fmt.Sprintf("%s.crt", domain))
 }
 
 func GenerateSelfSSL(domain, fp, org string) error {
 	return generateSelfSSL(domain, fp, org)
+}
+
+func SetProxyHostSSLConfigFile(fp, sslPath string, opt *CreateNewProxyHostOptions) error {
+	return nil
 }

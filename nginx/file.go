@@ -46,7 +46,17 @@ func createProxyHostDirectories(folderPath string) string {
 	if existOnDisk(folderPath) {
 		return folderPath
 	} else {
-		_ = makeDirectories(folderPath, filepath.Join(folderPath, "config"), filepath.Join(folderPath, "ssl"))
+		_ = makeDirectories(folderPath, filepath.Join(folderPath, "config"))
+		return folderPath
+	}
+}
+
+// Create Directory for proxy host
+func createProxyHostSslDirectories(folderPath string) string {
+	if existOnDisk(folderPath) {
+		return folderPath
+	} else {
+		_ = makeDirectories(folderPath)
 		return folderPath
 	}
 }
@@ -169,7 +179,7 @@ func ReadFromFile(filePath string) (string, error) {
 }
 
 func WriteToFile(filePath string, content string) error {
-	if _,err:= checkOrCreateSystemFile(filePath); err!=nil{
+	if _, err := checkOrCreateSystemFile(filePath); err != nil {
 		return err
 	}
 	file, err := os.Create(filePath)

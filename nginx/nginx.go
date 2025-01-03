@@ -83,8 +83,8 @@ func Open(opt *NginxInitOptions) (*Nginx, error) {
 	if err := createNginxDirectories(ng.ConfigPath); err != nil {
 		return &ng, err
 	}
-	if !checkForSelfSSL(opt.ConfigPath, "localhost") {
-		if err := generateSelfSSL("localhost", ng.ConfigPath, ng.SSL.Org); err != nil {
+	if !checkForSelfSSL(filepath.Join(ng.ConfigPath, "ssl"), "localhost") {
+		if err := generateSelfSSL("localhost", filepath.Join(ng.ConfigPath, "ssl"), ng.SSL.Org); err != nil {
 			fmt.Println("cant create localhost ssl")
 		}
 	}

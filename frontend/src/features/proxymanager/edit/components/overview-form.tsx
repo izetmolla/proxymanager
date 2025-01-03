@@ -21,6 +21,7 @@ import { saveProxyHostOverview } from '@/services/proxyhost.service'
 import { useToast } from '@/hooks/use-toast'
 import ProxyPassInput from '@/components/proxy-pass-input'
 import { extractProxyPassFromLocations } from '@/utils/proxypass'
+import { Checkbox } from '@/components/ui/checkbox'
 
 const formSchema = z
     .object({
@@ -31,6 +32,7 @@ const formSchema = z
         })).min(1, { message: 'One domain name is required.' }),
         protocol: z.string().min(1, { message: 'Protocol is required.' }),
         host: z.string().min(1, { message: 'Host is required.' }),
+        enableSSL: z.boolean(),
     })
 export type OverviewForm = z.infer<typeof formSchema>
 
@@ -51,6 +53,7 @@ export function ProxyHostOverviewForm({
             domains: proxyHost.domains.map((d) => ({ label: d, value: d })),
             protocol: protocol ?? 'http',
             host: host ?? '',
+            enableSSL: proxyHost?.enableSSL ?? false
         }
     })
 
@@ -124,6 +127,29 @@ export function ProxyHostOverviewForm({
                             </div>
 
                             <ProxyPassInput control={form.control} hostProps={{ placeholder: 'localhost:3000' }} protocolProps={{}} />
+
+                            <div className='col-span-full'>
+                                <FormField
+                                    control={form.control}
+                                    name="enableSSL"
+                                    render={({ field }) => (
+                                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4 shadow">
+                                            <FormControl>
+                                                <Checkbox
+                                                    checked={field.value}
+                                                    onCheckedChange={field.onChange}
+                                                />
+                                            </FormControl>
+                                            <div className="space-y-1 leading-none">
+                                                <FormLabel>
+                                                    This feature will generalte self SSL certificates.
+                                                </FormLabel>
+                                            </div>
+                                        </FormItem>
+                                    )}
+                                />
+
+                            </div>
 
                         </FormGroup>
                     </div>

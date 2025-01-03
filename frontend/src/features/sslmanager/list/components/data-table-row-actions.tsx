@@ -1,6 +1,6 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
 import { Row } from '@tanstack/react-table'
-import { IconTrash } from '@tabler/icons-react'
+import { IconDownload, IconTrash } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import {
   DropdownMenu,
@@ -11,9 +11,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { useSslManagerContext } from '../sslmanager-context'
-import { ProxyHostType } from '@/types/proxyhost'
-import { useRouter } from '@tanstack/react-router'
 import { SslType } from '@/types/ssl'
+import { downloadSslKey } from '@/services/ssl.service'
+import { useToast } from '@/hooks/use-toast'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
@@ -22,8 +22,28 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
-  const router = useRouter()
+  const { toast } = useToast()
   const { setOpen, setCurrentRow } = useSslManagerContext()
+
+  const downloadSssl = (id: string) => {
+    downloadSslKey(id).then((res) => res.data).then(({ error, data }) => {
+      if (error) {
+        toast({
+          title: 'Error',
+          description: error?.message,
+          variant: "destructive",
+        })
+      } else {
+        window.open(`/download.php?id=${data.id}`, '_blank')
+      }
+    }).catch((error) => {
+      toast({
+        title: 'Error',
+        description: error?.message,
+        variant: "destructive",
+      })
+    })
+  }
 
   return (
     <DropdownMenu modal={false}>
@@ -38,19 +58,17 @@ export function DataTableRowActions<TData>({
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end' className='w-[160px]'>
         <DropdownMenuItem
-          onClick={() => router.navigate({
-            to: "/ssl-manager/$id",
-            params: {
-              id: (row.original as SslType).id,
-            },
-          })}
+          onClick={() => downloadSssl((row.original as SslType).id)}
         >
-          Edit
+          Download
+          <DropdownMenuShortcut>
+            <IconDownload size={16} />
+          </DropdownMenuShortcut>
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onClick={() => {
-            setCurrentRow(row.original as ProxyHostType)
+            setCurrentRow(row.original as SslType)
             setOpen('delete')
           }}
         >

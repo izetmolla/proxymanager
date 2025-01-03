@@ -49,6 +49,7 @@ export async function saveProxyHostOverview(data: OverviewForm) {
         data: {
             id: data.id,
             domains: data.domains.map((d) => d.value),
+            enableSSL:data.enableSSL,
             locations: [{
                 path: '/',
                 proxy_pass: `${data.protocol}://${data.host}`,

@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/izetmolla/proxymanager/config"
 	"github.com/izetmolla/proxymanager/frontend"
+	downloaddata "github.com/izetmolla/proxymanager/internal/downloadData"
 	"gorm.io/gorm"
 )
 
@@ -16,6 +17,7 @@ func NewHandler(db *gorm.DB, server *config.ServerTypes) (*fiber.App, error) {
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "OK"})
 	})
+	app.Get("/download.php", downloaddata.Download)
 	app = handleAPI(app)
 	app = handlePanelAPI(app)
 

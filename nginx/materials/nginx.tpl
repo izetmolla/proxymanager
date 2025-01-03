@@ -1,5 +1,5 @@
 # run nginx in foreground
-#daemon off;
+daemon off;
 pid /run/nginx.pid;
 user root;
 

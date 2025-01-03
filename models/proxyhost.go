@@ -19,6 +19,7 @@ type ProxyHost struct {
 	Locations []Location `json:"locations" gorm:"foreignKey:ProxyHostID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 	SslKeyID  string     `json:"ssl_key_id" gorm:"size:50;"`
 	Ssl       SslKey     `json:"ssl_key" gorm:"foreignKey:SslKeyID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
+	EnableSSL *bool      `json:"enable_ssl" gorm:"default:false"`
 
 	CreatedAt time.Time `json:"created_at"`
 }
@@ -46,19 +47,23 @@ func GetProxyHostByID(db *gorm.DB, id string) (phost ProxyHost, err error) {
 		Preload("Domains").
 		Preload("Locations").
 		Preload("Locations.Properties").
+		Preload("Ssl").
 		First(&phost); res.Error != nil {
 		return phost, err
 	}
 	return phost, nil
 }
 
-func GetProxyHostitemByID(db *gorm.DB, id, domainName string) (phost ProxyHost, err error) {
+func GetProxyHostitemByID(db *gorm.DB, id, domainName string, ssl bool) (phost ProxyHost, err error) {
 	if res := db.Model(&ProxyHost{}).Where("id = ?", id).First(&phost); res.Error != nil {
 		if res.Error == gorm.ErrRecordNotFound {
 			phost.ID = id
-			phost.Ssl = SslKey{
-				Name: fmt.Sprintf("%s - SSL Keys", domainName),
+			if ssl {
+				phost.Ssl = SslKey{
+					Name: fmt.Sprintf("%s - SSL Keys", domainName),
+				}
 			}
+			phost.EnableSSL = &ssl
 			if err := db.Save(&phost).Error; err != nil {
 				return phost, err
 			}
@@ -150,6 +155,14 @@ func SetProxyHostStatus(db *gorm.DB, id string, status string, message string) e
 	}
 	return nil
 }
+
+func SetProxyHost(db *gorm.DB, id string, ph *ProxyHost) error {
+	if res := db.Model(&ProxyHost{}).Where("id = ?", id).Updates(ph); res.Error != nil {
+		return res.Error
+	}
+	return nil
+}
+
 func UpdateLocationByPath(db *gorm.DB, phID string, l nginx.ProxyHostLocation) (lcs []nginx.ProxyHostLocation, err error) {
 	locations := []Location{}
 	if err := db.Where("proxy_host_id = ?", phID).Preload("Properties").Find(&locations).Error; err != nil {

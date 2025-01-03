@@ -41,6 +41,8 @@ func handlePanelAPI(app *fiber.App) *fiber.App {
 
 	api.Get("/ssl/getdata", sslkeys.GetSslKeysList)
 	api.Post("/ssl/create", sslkeys.CreateSslKey)
+	api.Delete("/ssl/delete", sslkeys.DeleteSSLKey)
+	api.Get("/ssl/download", sslkeys.DownloadSslKey)
 
 	// Catch all other routes
 	api.All("*", func(c *fiber.Ctx) error {

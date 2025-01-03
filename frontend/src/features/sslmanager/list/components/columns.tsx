@@ -79,6 +79,6 @@ export const columns: ColumnDef<SslType>[] = [
     },
     {
         id: 'actions',
-        cell: ({ row }) => <DataTableRowActions row={row} />,
+        cell: ({ row }) => <DataTableRowActions<SslType> row={row} />,
     },
 ]

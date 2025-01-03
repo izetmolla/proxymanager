@@ -17,8 +17,9 @@ import SslManagerListContextProvider, { SslManagerListDialogType } from "./sslma
 import useDialogState from "@/hooks/use-dialog-state";
 import { IconPlus } from "@tabler/icons-react";
 import { ConfirmDialog } from "@/components/confirm-dialog";
-import { getSslList } from "@/services/ssl.service";
+import { deleteSslKey, getSslList } from "@/services/ssl.service";
 import { CreateSslKey } from "./components/create-ssl-key";
+import { useToast } from "@/hooks/use-toast";
 
 
 
@@ -34,6 +35,7 @@ const meta = {
 }
 
 const SslManagerList: FC<SslListProps> = ({ id }) => {
+    const { toast } = useToast()
     const [currentRow, setCurrentRow] = useState<SslType | null>(null)
     const [open, setOpen] = useDialogState<SslManagerListDialogType>(null)
     const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>(
@@ -112,7 +114,29 @@ const SslManagerList: FC<SslListProps> = ({ id }) => {
                             }, 500)
                         }}
                         handleConfirm={() => {
-                            alert("DEleting")
+                            deleteSslKey(currentRow.id).then((data) => data?.data).then(({ error }) => {
+                                if (error) {
+                                    toast({
+                                        title: 'Error',
+                                        description: error.message,
+                                        variant: "destructive"
+                                    })
+                                } else {
+                                    refetch()
+                                    setOpen(null)
+                                    toast({
+                                        title: 'Success',
+                                        description: 'SSL deleted successfully',
+                                        variant: "default"
+                                    })
+                                }
+                            }).catch((e) => {
+                                toast({
+                                    title: 'Error',
+                                    description: e?.message,
+                                    variant: "destructive"
+                                })
+                            })
                         }}
                         className='max-w-md'
                         title={`Delete this SSL ${currentRow.name}?`}

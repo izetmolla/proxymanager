@@ -16,7 +16,7 @@ import (
 )
 
 func generateSelfSSL(domain, fp, org string) error {
-	p := filepath.Join(fp, "ssl", "auto")
+	p := filepath.Join(fp, "auto")
 	makeDirectories(p)
 	return generateSelfSignedSSL(
 		filepath.Join(p, fmt.Sprintf("%s.key", domain)),

@@ -118,20 +118,21 @@ func mainFileLine(p string) string {
 	return fmt.Sprintf("include %s/*.conf;", filepath.Join(p, "config"))
 }
 
-func setProxyPasConfigFile(fp string, opt *CreateNewProxyHostOptions) (err error) {
+func setProxyPasConfigFile(fp, sslPath string, opt *CreateNewProxyHostOptions) (err error) {
 	if err := createFromBinary(&Materials, "nginx_proxyhost.tpl", filepath.Join(fp, "config", "nginx.conf"), ProxyHost{
 		ID:       opt.ID,
 		HostPath: fp,
 		ProxyHostSSL: ProxyHostSSL{
 			Enabled:        opt.SSLEnabled,
 			ForceHttps:     opt.ForceHttps,
-			Certificate:    filepath.Join(opt.SSLType, fmt.Sprintf("%s.crt", opt.Domains[0])),
-			CertificateKey: filepath.Join(opt.SSLType, fmt.Sprintf("%s.key", opt.Domains[0])),
+			Certificate:    filepath.Join(opt.SSLType, "ssl.crt"),
+			CertificateKey: filepath.Join(opt.SSLType, "ssl.key"),
 			HTTP2:          opt.HTTP2,
 			Hsts:           opt.Hsts,
 		},
 		Domains:   opt.Domains,
 		Locations: opt.Locations,
+		SslPath:   sslPath,
 	}); err != nil {
 		return err
 	}
@@ -146,4 +147,14 @@ func randomString(length int) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+func insertCustomSsl(sslPath, ssl_key, ssl_cert string) error {
+	if err := WriteToFile(filepath.Join(sslPath, "custom", "ssl.key"), ssl_key); err != nil {
+		return err
+	}
+	if err := WriteToFile(filepath.Join(sslPath, "custom", "ssl.crt"), ssl_cert); err != nil {
+		return err
+	}
+	return nil
 }

@@ -25,3 +25,21 @@ export async function createSslKey(data: CreateSslKeyForm) {
     })
 }
 
+
+export async function deleteSslKey(id: string) {
+    return ApiService.fetchData<CreateRequestTypes<{ id: string }>>({
+        url: '/ssl/delete',
+        method: 'delete',
+        params: { id },
+    })
+}
+
+
+export async function downloadSslKey(id: string) {
+    return ApiService.fetchData<CreateRequestTypes<{ id: string }>>({
+        url: '/ssl/download',
+        method: 'get',
+        params: { id },
+    })
+}
+

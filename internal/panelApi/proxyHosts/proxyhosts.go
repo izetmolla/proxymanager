@@ -77,7 +77,7 @@ func CreateProxyHost(c *fiber.Ctx) error {
 		return c.JSON(utils.Em(err))
 	}
 
-	ph, err := models.GetProxyHostitemByID(config.DB, "", body.Domains[0])
+	ph, err := models.GetProxyHostitemByID(config.DB, "", body.Domains[0], body.EnableSSL)
 	if err != nil {
 		return c.JSON(utils.Em(err))
 	}
@@ -96,7 +96,8 @@ func CreateProxyHost(c *fiber.Ctx) error {
 		ID:         ph.ID,
 		Domains:    domains,
 		Locations:  locations,
-		SSLEnabled: body.EnableSSL,
+		SSLEnabled: *ph.EnableSSL,
+		SSLID:      ph.Ssl.ID,
 	}); err != nil {
 		return c.JSON(utils.Em(err))
 	}
@@ -142,6 +143,9 @@ func GetProxyHost(c *fiber.Ctx) error {
 			"id":        ph.ID,
 			"domains":   domains,
 			"locations": locations,
+			"enableSSL": ph.EnableSSL,
+			"status":    ph.Status,
+			"ssl":       ph.Ssl,
 		},
 	})
 }
@@ -152,6 +156,7 @@ type SaveProxyHostOverviewRequest struct {
 	Protocol  string                    `json:"protocol"`
 	Host      string                    `json:"host"`
 	Locations []nginx.ProxyHostLocation `json:"locations"`
+	EnableSSL bool                      `json:"enableSSL"`
 }
 
 func SaveProxyHostOverview(c *fiber.Ctx) error {
@@ -187,12 +192,18 @@ func SaveProxyHostOverview(c *fiber.Ctx) error {
 		ID:         ph.ID,
 		Domains:    domains,
 		Locations:  locations,
-		SSLEnabled: true,
+		SSLEnabled: *ph.EnableSSL,
+		SSLType:    ph.Ssl.Type,
+		SSLID:      ph.Ssl.ID,
 	}); err != nil {
+		go deleteDomains(body.Domains, ph.ID)
 		go models.SetProxyHostStatus(config.DB, ph.ID, "error", err.Error())
 		return c.JSON(utils.Em(err))
 	}
-	go models.SetProxyHostStatus(config.DB, ph.ID, "running", "")
+	models.SetProxyHost(config.DB, ph.ID, &models.ProxyHost{
+		Status:    "active",
+		EnableSSL: &body.EnableSSL,
+	})
 	return c.JSON(fiber.Map{})
 }
 
@@ -215,4 +226,13 @@ func DeleteProxyHost(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"data": ph,
 	})
+}
+
+func deleteDomains(domains []string, proxyHostId string) error {
+	for _, domain := range domains {
+		if err := config.DB.Delete(&models.Domain{}, "name = ? AND proxy_host_id = ?", domain, proxyHostId).Error; err != nil {
+			return err
+		}
+	}
+	return nil
 }

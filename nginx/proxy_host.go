@@ -12,14 +12,17 @@ type ProxyHostLocation struct {
 }
 
 type CreateNewProxyHostOptions struct {
-	ID         string
-	Domains    []string
-	Locations  []ProxyHostLocation
-	SSLEnabled bool
-	SSLType    string
-	ForceHttps bool
-	HTTP2      bool `json:"http2"`
-	Hsts       bool `json:"hsts"`
+	ID             string
+	Domains        []string
+	Locations      []ProxyHostLocation
+	SSLEnabled     bool
+	SSLType        string
+	ForceHttps     bool
+	HTTP2          bool   `json:"http2"`
+	Hsts           bool   `json:"hsts"`
+	SSLID          string `json:"ssl_id"`
+	SSLKey         string `json:"ssl_key"`
+	SSLCertificate string `json:"ssl_certificate"`
 }
 
 type ProxyHostSSL struct {
@@ -35,6 +38,7 @@ type ProxyHost struct {
 	ID           string              `json:"id"`
 	ProxyHostSSL ProxyHostSSL        `json:"ssl"`
 	HostPath     string              `json:"host_path"`
+	SslPath      string              `json:"ssl_path"`
 	Domains      []string            `json:"domains"`
 	Locations    []ProxyHostLocation `json:"locations"`
 }
@@ -47,12 +51,21 @@ func (ng *Nginx) UpdateProxyHost(options *CreateNewProxyHostOptions) (err error)
 		return fmt.Errorf("domain is required")
 	}
 	hostPath := createProxyHostDirectories(filepath.Join(ng.ConfigPath, "hosts", options.ID))
+	sslPath := createProxyHostSslDirectories(filepath.Join(ng.ConfigPath, "ssl", options.SSLID))
 
-	if !checkForSelfSSL(hostPath, options.Domains[0]) {
-		_ = generateSelfSSL(options.Domains[0], hostPath, ng.SSL.Org)
+	if options.SSLType == "auto" && !checkForSelfSSL(sslPath, "auto") {
+		options.SSLEnabled = true
+		_ = generateSelfSSL("ssl", sslPath, ng.SSL.Org)
 	}
+	if options.SSLType == "custom" && !checkForSelfSSL(sslPath, "custom") {
+		options.SSLEnabled = true
+		if err := insertCustomSsl(sslPath, options.SSLKey, options.SSLCertificate); err != nil {
+			return err
+		}
+	}
+
 	_ = backupProxyHostCurrentConfig(hostPath)
-	if err = setProxyPasConfigFile(hostPath, options); err != nil {
+	if err = setProxyPasConfigFile(hostPath, sslPath, options); err != nil {
 		return err
 	}
 
