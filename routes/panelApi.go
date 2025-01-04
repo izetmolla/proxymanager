@@ -22,6 +22,7 @@ func handlePanelAPI(app *fiber.App, server *config.ServerTypes) *fiber.App {
 	if !server.Setup {
 		app.Post("/panelapi/setup/init", setupApp.InitSetup)
 		app.Get("/panelapi/setup/getdata", setupApp.GetData)
+		app.Post("/panelapi/setup/save", setupApp.SaveData)
 	}
 	api := app.Group("/panelapi")
 	api.Get("/", func(c *fiber.Ctx) error {

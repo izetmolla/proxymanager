@@ -1,3 +1,4 @@
+import { PasswordInput } from "@/components/password-input";
 import {
     FormControl,
     FormField,
@@ -8,19 +9,21 @@ import {
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
 
-export function PersonalInfoStep() {
+
+
+export const CreateUserStep= () => {
     const form = useFormContext();
 
     return (
         <div className="space-y-4">
             <FormField
                 control={form.control}
-                name="personal.firstName"
+                name="name"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>First Name</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                            <Input placeholder="John" {...field} />
+                            <Input placeholder="John Doe" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -28,12 +31,12 @@ export function PersonalInfoStep() {
             />
             <FormField
                 control={form.control}
-                name="personal.lastName"
+                name="email"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Last Name</FormLabel>
+                        <FormLabel>Name</FormLabel>
                         <FormControl>
-                            <Input placeholder="Doe" {...field} />
+                            <Input placeholder="johndoe@gmail.com" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
@@ -41,17 +44,31 @@ export function PersonalInfoStep() {
             />
             <FormField
                 control={form.control}
-                name="personal.email"
+                name="username"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Email</FormLabel>
+                        <FormLabel>Username</FormLabel>
                         <FormControl>
-                            <Input placeholder="john.doe@example.com" type="email" {...field} />
+                            <Input placeholder="johndoe" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                 )}
             />
+            <FormField
+                control={form.control}
+                name='password'
+                render={({ field }) => (
+                    <FormItem className='space-y-1'>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                            <PasswordInput placeholder='********' {...field} />
+                        </FormControl>
+                        <FormMessage />
+                    </FormItem>
+                )}
+            />
+
         </div>
     );
 }

@@ -8,10 +8,7 @@ import (
 	"time"
 
 	"github.com/izetmolla/proxymanager/config"
-	"github.com/izetmolla/proxymanager/models"
-	"github.com/izetmolla/proxymanager/utils"
 	"github.com/spf13/pflag"
-	"gorm.io/gorm"
 )
 
 func checkErr(err error) {
@@ -155,19 +152,4 @@ func randomString(length int) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
-}
-
-func insertAdminUser(db *gorm.DB) error {
-	var count int64
-	db.Model(&models.User{}).Count(&count)
-	if count == 0 {
-		if res := db.Model(&models.User{}).Create(&models.User{
-			Name:     "Admin",
-			Username: "admin",
-			Password: utils.CreatePassword("admin"),
-		}); res.Error != nil {
-			return res.Error
-		}
-	}
-	return nil
 }

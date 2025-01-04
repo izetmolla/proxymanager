@@ -9,11 +9,12 @@ import { GeneralStep } from "./steps/general";
 import { Progress } from "@/components/ui/progress";
 import { useToast } from "@/hooks/use-toast";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
-import { GetSetupDataResponse, initSetupApp, saveSetupData } from "@/services/setup.service";
-import { useAppDispatch } from "@/store";
-import { setSetup } from "@/store/slices/generalSlice";
-import { useRouter } from "@tanstack/react-router";
+import { GetSetupDataResponse, saveSetupData } from "@/services/setup.service";
 import { CreateRequestTypes } from "@/types";
+import { SecretsStep } from "./steps/secrets";
+import { CreateUserStep } from "./steps/user";
+import { signIn, useAppDispatch } from "@/store";
+import { setSetup } from "@/store/slices/generalSlice";
 
 
 const generalSchema = z.object({
@@ -57,36 +58,36 @@ const stepSchemas: { [key: number]: z.ZodObject<any, any, any> } = {
 
 export type StepsFormData = z.infer<typeof generalSchema> | z.infer<typeof authenticationSchema> | z.infer<typeof userSchema>
 
-const STEPS = ["General", "Authentication", "Create User"];
+const STEPS = ["General", "Auth Secrets", "Create User"];
 
 
 interface SetupStepsFormProps {
     data?: CreateRequestTypes<GetSetupDataResponse>
 }
 export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
-    const router = useRouter()
-    const dispatch = useAppDispatch()
-    const [step, setStep] = useState(data?.data?.server?.step ?? 0);
+    const dispatch = useAppDispatch();
+    const server = data?.data?.server;
+    const [step, setStep] = useState(server?.step ?? 0);
     const { toast } = useToast();
 
     const form = useForm<StepsFormData>({
         resolver: zodResolver(stepSchemas[step]),
         defaultValues: {
-            address: data?.data.server.address ?? "0.0.0.0",
-            port: data?.data.server.port.toString() ?? "81",
-            baseUrl: data?.data.server.baseUrl ?? "http://project.local",
-            access_token_secret: data?.data.server.access_token_secret ?? "",
-            refresh_token_secret: data?.data.server.refresh_token_secret ?? "",
-            access_token_exp: data?.data.server.access_token_exp ?? "1m",
-            refresh_token_exp: data?.data.server.refresh_token_exp ?? "8760h",
-            tokens_issuer: data?.data.server.tokens_issuer ?? "",
-            enable_social_auth: data?.data.server.enable_social_auth ?? false,
-            google_key: data?.data.server.google_key ?? "",
-            google_secret: data?.data.server.google_secret ?? "",
-            google_callback: data?.data.server.google_callback ?? "",
-            github_key: data?.data.server.github_key ?? "",
-            github_secret: data?.data.server.github_secret ?? "",
-            github_callback: data?.data.server.github_callback ?? "",
+            address: server?.address ?? "0.0.0.0",
+            port: server?.port.toString() ?? "81",
+            baseUrl: server?.baseUrl || "http://project.local",
+            access_token_secret: server?.access_token_secret || "",
+            refresh_token_secret: server?.refresh_token_secret || "",
+            access_token_exp: server?.access_token_exp || "1m",
+            refresh_token_exp: server?.refresh_token_exp || "8760h",
+            tokens_issuer: server?.tokens_issuer || "",
+            enable_social_auth: server?.enable_social_auth || false,
+            google_key: server?.google_key || "",
+            google_secret: server?.google_secret || "",
+            google_callback: server?.google_callback || `${server?.baseUrl}/auth/google/callback`,
+            github_key: server?.github_key || "",
+            github_secret: server?.github_secret || "",
+            github_callback: server?.github_callback || `${server?.baseUrl}/auth/github/callback`,
             email: "",
             username: "",
             password: "",
@@ -95,8 +96,7 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
     })
 
     const onSubmit = (data: StepsFormData) => {
-        console.log(data)
-        saveSetupData(data).then((res) => res.data).then(({ error, data: { server } }) => {
+        saveSetupData(data, step).then((res) => res.data).then(({ error, data: { server, user, tokens } }) => {
             if (error) {
                 if (error.path) {
                     // eslint-disable-next-line
@@ -111,7 +111,16 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
                     });
                 }
             } else {
-                setStep(server.step);
+                if (step === STEPS.length - 1) {
+                    toast({
+                        title: "Success",
+                        description: "Setup completed successfully",
+                    });
+                    dispatch(signIn({ user, tokens }));
+                    dispatch(setSetup(true))
+                } else {
+                    setStep(server.step);
+                }
             }
         }).catch(e => {
             console.log(e)
@@ -125,19 +134,6 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
 
     const progress = ((step + 1) / STEPS.length) * 100;
 
-
-    const init = () => {
-        initSetupApp({ id: '1' }).then((res) => res.data).then(({ error }) => {
-            if (error) {
-                console.log(error)
-            } else {
-                dispatch(setSetup(true))
-                router.invalidate()
-            }
-        }).catch(e => {
-            console.log(e)
-        })
-    }
 
     console.log(form.formState.errors)
     return (
@@ -153,8 +149,8 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                         <CardContent className="space-y-4">
                             {step === 0 && <GeneralStep data={data} />}
-                            {/* {step === 1 && <AddressStep />}
-                            {step === 2 && <PreferencesStep />} */}
+                            {step === 1 && <SecretsStep />}
+                            {step === 2 && <CreateUserStep />}
                         </CardContent>
                         <CardFooter className="flex justify-between">
                             <Button
@@ -167,15 +163,12 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
                                 Previous
                             </Button>
                             {step === STEPS.length - 1 ? (
-                                <Button type="button" onClick={init}>
-                                    Submit
+                                <Button type="submit">
+                                    Finish Setup
                                     <Check className="ml-2 h-4 w-4" />
                                 </Button>
                             ) : (
-                                <Button
-                                    type="submit"
-                                // onClick={() => stepSubmit(step)}
-                                >
+                                <Button type="submit">
                                     Next
                                     <ChevronRight className="ml-2 h-4 w-4" />
                                 </Button>

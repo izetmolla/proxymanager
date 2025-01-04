@@ -13,6 +13,7 @@ type ServerTypes struct {
 	StepCompleted      []int  `json:"step_completed"`
 	Setup              bool   `json:"setup"`
 	Address            string `json:"address"`
+	BaseUrl            string `json:"baseUrl"`
 	Port               string `json:"port"`
 	AccessTokenSecret  string `json:"access_token_secret"`
 	RefreshTokenSecret string `json:"refresh_token_secret"`
@@ -29,6 +30,11 @@ type ServerTypes struct {
 	GithubSecret     string `json:"github_secret"`
 	GithubCallback   string `json:"github_callback"`
 	CredentialsLogin bool   `json:"credentials_login"`
+
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Email    string `json:"email"`
+	Name     string `json:"name"`
 }
 
 var server *ServerTypes

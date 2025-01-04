@@ -1,6 +1,8 @@
 package models
 
 import (
+	"errors"
+	"fmt"
 	"time"
 
 	"github.com/google/uuid"
@@ -32,4 +34,15 @@ func GetUserByUsername(db *gorm.DB, username string) (*User, error) {
 		return nil, err
 	}
 	return &user, nil
+}
+
+func InsertUser(db *gorm.DB, usr User) (User, error) {
+	user, err := GetUserByUsername(db, usr.Username)
+	if (err != nil && !errors.Is(err, gorm.ErrRecordNotFound)) || user != nil {
+		return usr, fmt.Errorf("user already exists")
+	}
+	if res := db.Model(&User{}).Create(&usr); res.Error != nil {
+		return usr, res.Error
+	}
+	return usr, nil
 }

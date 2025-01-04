@@ -5,17 +5,22 @@ import { StepsFormData } from "@/features/setup/components/steps-form";
 
 
 
-export async function initSetupApp(data: { id: string }) {
-    return ApiService.fetchData<CreateRequestTypes<{ id: string }>>({
-        url: '/setup/init',
-        method: 'post',
-        data: data,
-    })
-}
 
 
 export interface GetSetupDataResponse {
     ips: { value: string, label: string }[]
+    user:{
+        email: string
+        username: string
+        name: string
+        id: string;
+        password: string;
+        img: string;
+    },
+    tokens: {
+        access_token: string
+        refresh_token: string
+    },
     server: {
         step: number
         address: string
@@ -43,10 +48,10 @@ export async function getSetupData() {
     })
 }
 
-export async function saveSetupData(data: StepsFormData) {
+export async function saveSetupData(data: StepsFormData, step: number) {
     return ApiService.fetchData<CreateRequestTypes<GetSetupDataResponse>>({
         url: '/setup/save',
         method: 'post',
-        data: data,
+        data: { ...data, step },
     })
 }

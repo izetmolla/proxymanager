@@ -28,7 +28,10 @@ export const GeneralStep: FC<GeneralStepProps> = ({
                 name="baseUrl"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Base URL</FormLabel>
+                        <FormLabel>Base URL
+                        <span className="text-red-500 ml-1">*</span>
+                        <InfoTooltip content="Enter Bas url to access this panel without ports" />
+                        </FormLabel>
                         <FormControl>
                             <Input placeholder="yourdomain.com" {...field} />
                         </FormControl>
@@ -56,6 +59,9 @@ export const GeneralStep: FC<GeneralStepProps> = ({
                                     setIpAddresses([...ipAddresses, { value: inputValue, label: inputValue }]);
                                     form.setValue('address', inputValue);
                                 }}
+                                onChange={(selectedOption) => {
+                                    form.setValue('address', selectedOption?.value);
+                                }}
                                 defaultValue={ipAddresses}
                             />
                             <FormMessage />
@@ -67,7 +73,10 @@ export const GeneralStep: FC<GeneralStepProps> = ({
                     name="port"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>Port</FormLabel>
+                            <FormLabel>Port
+                                <span className="text-red-500 ml-1">*</span>
+                                <InfoTooltip content="Enter Port" />
+                            </FormLabel>
                             <FormControl>
                                 <Input placeholder="81" {...field} />
                             </FormControl>
