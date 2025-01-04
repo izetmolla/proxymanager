@@ -13,7 +13,10 @@ import NotFoundError from '@/features/errors/not-found-error'
 import GeneralError from '@/features/errors/general-error'
 
 export const Route = createFileRoute('/_authenticated')({
-  beforeLoad: async ({ context }) => {
+  beforeLoad: ({ context }) => {
+    if (!context?.setup && window.location.pathname !== '/setup') {
+      throw redirect({ to: "/setup" });
+    }
     if (!context.auth?.signedIn) {
       throw redirect({ to: "/sign-in" });
     }

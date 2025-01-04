@@ -9,6 +9,7 @@ import (
 )
 
 type ServerTypes struct {
+	Setup              bool   `json:"setup"`
 	Address            string `json:"address"`
 	Port               string `json:"port"`
 	AccessTokenSecret  string `json:"access_token_secret"`
@@ -25,12 +26,14 @@ type ServerTypes struct {
 	GithubKey        string `json:"github_key"`
 	GithubSecret     string `json:"github_secret"`
 	GithubCallback   string `json:"github_callback"`
+	CredentialsLogin bool   `json:"credentials_login"`
 }
 
 var server *ServerTypes
 
-func SetServer(db *gorm.DB, newParams ServerTypes) (*ServerTypes, error) {
+func SetServer(newParams ServerTypes) (*ServerTypes, error) {
 	if server != nil {
+		server.Setup = newParams.Setup
 		server.Address = newParams.Address
 		server.Port = newParams.Port
 		server.AccessTokenSecret = newParams.AccessTokenSecret
@@ -44,12 +47,13 @@ func SetServer(db *gorm.DB, newParams ServerTypes) (*ServerTypes, error) {
 		server.GithubKey = newParams.GithubKey
 		server.GithubSecret = newParams.GithubSecret
 		server.GithubCallback = newParams.GithubCallback
+		server.CredentialsLogin = newParams.CredentialsLogin
 	}
 	st, err := serverTypesToString(server)
 	if err != nil {
 		return server, err
 	}
-	if res := db.Model(&models.Option{}).Where("option = ?", "server_config").Update("value", st); res.Error != nil {
+	if res := DB.Model(&models.Option{}).Where("option = ?", "server_config").Update("value", st); res.Error != nil {
 		return server, res.Error
 	}
 	return server, nil

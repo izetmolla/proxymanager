@@ -1,1 +1,0 @@
-import{x as t,j as e}from"./index-D6FmMTvM.js";const s=t("/_authenticated/access-list/")({component:o});function o(){return e.jsx("div",{children:'Hello "/_authenticated/access-list/"!'})}export{s as Route};

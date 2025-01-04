@@ -1,6 +1,0 @@
-import{y as n,s as o,j as s,H as t,ak as d,al as u,am as f,an as h}from"./index-D6FmMTvM.js";import{P as j,h as p,j as x}from"./use-dialog-state-BStcso-z.js";/**
- * @license @tabler/icons-react v3.26.0 - MIT
- *
- * This source code is licensed under the MIT license.
- * See the LICENSE file in the root directory of this source tree.
- */var P=n("outline","plus","IconPlus",[["path",{d:"M12 5l0 14",key:"svg-0"}],["path",{d:"M5 12l14 0",key:"svg-1"}]]);function T({children:e,className:a="",contentClassName:l=""}){const r=o.useRef(null),[c,i]=o.useState(!1);return o.useEffect(()=>{if(v(r.current)){i(!0);return}i(!1)},[]),c?s.jsxs(s.Fragment,{children:[s.jsx("div",{className:"hidden sm:block",children:s.jsx(d,{delayDuration:0,children:s.jsxs(u,{children:[s.jsx(f,{asChild:!0,children:s.jsx("div",{ref:r,className:t("truncate",a),children:e})}),s.jsx(h,{children:s.jsx("p",{className:l,children:e})})]})})}),s.jsx("div",{className:"sm:hidden",children:s.jsxs(j,{children:[s.jsx(p,{asChild:!0,children:s.jsx("div",{ref:r,className:t("truncate",a),children:e})}),s.jsx(x,{className:t("w-fit",l),children:s.jsx("p",{children:e})})]})})]}):s.jsx("div",{ref:r,className:t("truncate",a),children:e})}const v=e=>e?e.offsetHeight<e.scrollHeight||e.offsetWidth<e.scrollWidth:!1;export{P as I,T as L};

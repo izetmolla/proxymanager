@@ -16,6 +16,7 @@ import { Route as rootRoute } from './routes/__root'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated/route'
 import { Route as AuthenticatedIndexImport } from './routes/_authenticated/index'
 import { Route as authSignInImport } from './routes/(auth)/sign-in'
+import { Route as authSetupImport } from './routes/(auth)/setup'
 import { Route as authForgotPasswordImport } from './routes/(auth)/forgot-password'
 import { Route as auth500Import } from './routes/(auth)/500'
 import { Route as AuthenticatedProxyManagerIdNavIndexImport } from './routes/_authenticated/proxy-manager/$id/$nav/index'
@@ -81,6 +82,12 @@ const AuthenticatedIndexRoute = AuthenticatedIndexImport.update({
 const authSignInRoute = authSignInImport.update({
   id: '/(auth)/sign-in',
   path: '/sign-in',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const authSetupRoute = authSetupImport.update({
+  id: '/(auth)/setup',
+  path: '/setup',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -272,6 +279,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof authForgotPasswordImport
       parentRoute: typeof rootRoute
     }
+    '/(auth)/setup': {
+      id: '/(auth)/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof authSetupImport
+      parentRoute: typeof rootRoute
+    }
     '/(auth)/sign-in': {
       id: '/(auth)/sign-in'
       path: '/sign-in'
@@ -449,6 +463,7 @@ export interface FileRoutesByFullPath {
   '': typeof AuthenticatedRouteRouteWithChildren
   '/500': typeof auth500Route
   '/forgot-password': typeof authForgotPasswordRoute
+  '/setup': typeof authSetupRoute
   '/sign-in': typeof authSignInRoute
   '/': typeof AuthenticatedIndexRoute
   '/access-list': typeof AuthenticatedAccessListIndexLazyRoute
@@ -471,6 +486,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/500': typeof auth500Route
   '/forgot-password': typeof authForgotPasswordRoute
+  '/setup': typeof authSetupRoute
   '/sign-in': typeof authSignInRoute
   '/': typeof AuthenticatedIndexRoute
   '/access-list': typeof AuthenticatedAccessListIndexLazyRoute
@@ -495,6 +511,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/(auth)/500': typeof auth500Route
   '/(auth)/forgot-password': typeof authForgotPasswordRoute
+  '/(auth)/setup': typeof authSetupRoute
   '/(auth)/sign-in': typeof authSignInRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/access-list/': typeof AuthenticatedAccessListIndexLazyRoute
@@ -520,6 +537,7 @@ export interface FileRouteTypes {
     | ''
     | '/500'
     | '/forgot-password'
+    | '/setup'
     | '/sign-in'
     | '/'
     | '/access-list'
@@ -541,6 +559,7 @@ export interface FileRouteTypes {
   to:
     | '/500'
     | '/forgot-password'
+    | '/setup'
     | '/sign-in'
     | '/'
     | '/access-list'
@@ -563,6 +582,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/(auth)/500'
     | '/(auth)/forgot-password'
+    | '/(auth)/setup'
     | '/(auth)/sign-in'
     | '/_authenticated/'
     | '/_authenticated/access-list/'
@@ -587,6 +607,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   auth500Route: typeof auth500Route
   authForgotPasswordRoute: typeof authForgotPasswordRoute
+  authSetupRoute: typeof authSetupRoute
   authSignInRoute: typeof authSignInRoute
 }
 
@@ -594,6 +615,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   auth500Route: auth500Route,
   authForgotPasswordRoute: authForgotPasswordRoute,
+  authSetupRoute: authSetupRoute,
   authSignInRoute: authSignInRoute,
 }
 
@@ -610,6 +632,7 @@ export const routeTree = rootRoute
         "/_authenticated",
         "/(auth)/500",
         "/(auth)/forgot-password",
+        "/(auth)/setup",
         "/(auth)/sign-in"
       ]
     },
@@ -639,6 +662,9 @@ export const routeTree = rootRoute
     },
     "/(auth)/forgot-password": {
       "filePath": "(auth)/forgot-password.tsx"
+    },
+    "/(auth)/setup": {
+      "filePath": "(auth)/setup.tsx"
     },
     "/(auth)/sign-in": {
       "filePath": "(auth)/sign-in.tsx"

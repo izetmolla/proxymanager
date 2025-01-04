@@ -7,9 +7,12 @@ import GeneralError from '@/features/errors/general-error'
 import NotFoundError from '@/features/errors/not-found-error'
 import { AuthState } from '@/store'
 
+
+
 export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
   auth?: AuthState | null
+  setup: boolean
 }>()({
   component: () => {
     return (

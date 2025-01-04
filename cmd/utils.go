@@ -137,7 +137,13 @@ func getRunParams(flags *pflag.FlagSet, db *gorm.DB) *config.ServerTypes {
 		server.GithubCallback = setOnEmptyString(server.GithubCallback, "")
 	}
 
-	_, _ = config.SetServer(db, *server)
+	if val, set := getParamB(flags, "credentials_login"); set {
+		server.CredentialsLogin = val == "true"
+	} else {
+		server.CredentialsLogin = setOnEmptyString("", "true") == "true"
+	}
+
+	_, _ = config.SetServer(*server)
 	return server
 
 }
