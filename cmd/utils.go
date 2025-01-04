@@ -47,7 +47,7 @@ func setOnEmptyString(val, def string) string {
 	return val
 }
 
-func getRunParams(flags *pflag.FlagSet, db *gorm.DB) *config.ServerTypes {
+func getRunParams(flags *pflag.FlagSet) *config.ServerTypes {
 	server, err := config.GetServer()
 	checkErr(err)
 

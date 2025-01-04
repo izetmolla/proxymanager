@@ -9,6 +9,8 @@ import (
 )
 
 type ServerTypes struct {
+	Step               int    `json:"step"`
+	StepCompleted      []int  `json:"step_completed"`
 	Setup              bool   `json:"setup"`
 	Address            string `json:"address"`
 	Port               string `json:"port"`
@@ -33,6 +35,8 @@ var server *ServerTypes
 
 func SetServer(newParams ServerTypes) (*ServerTypes, error) {
 	if server != nil {
+		server.Step = newParams.Step
+		server.StepCompleted = newParams.StepCompleted
 		server.Setup = newParams.Setup
 		server.Address = newParams.Address
 		server.Port = newParams.Port

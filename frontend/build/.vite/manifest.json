@@ -1,37 +1,37 @@
 {
-  "_confirm-dialog-DPh3pi1W.js": {
-    "file": "assets/confirm-dialog-DPh3pi1W.js",
+  "_confirm-dialog-BTp5LQSj.js": {
+    "file": "assets/confirm-dialog-BTp5LQSj.js",
     "name": "confirm-dialog",
     "imports": [
       "index.html"
     ]
   },
-  "_data-table-faceted-filter-Ba8nO5Bx.js": {
-    "file": "assets/data-table-faceted-filter-Ba8nO5Bx.js",
+  "_data-table-faceted-filter-Dju3LRXg.js": {
+    "file": "assets/data-table-faceted-filter-Dju3LRXg.js",
     "name": "data-table-faceted-filter",
     "imports": [
       "index.html",
-      "_use-dialog-state-CJEoq5dC.js"
+      "_use-dialog-state-CpsiCG0p.js"
     ]
   },
-  "_long-text-BBsbVaN6.js": {
-    "file": "assets/long-text-BBsbVaN6.js",
+  "_long-text-c-PZ8jVc.js": {
+    "file": "assets/long-text-c-PZ8jVc.js",
     "name": "long-text",
     "imports": [
       "index.html",
-      "_use-dialog-state-CJEoq5dC.js"
+      "_use-dialog-state-CpsiCG0p.js"
     ]
   },
-  "_use-dialog-state-CJEoq5dC.js": {
-    "file": "assets/use-dialog-state-CJEoq5dC.js",
+  "_use-dialog-state-CpsiCG0p.js": {
+    "file": "assets/use-dialog-state-CpsiCG0p.js",
     "name": "use-dialog-state",
     "imports": [
       "index.html"
     ]
   },
   "index.html": {
-    "file": "assets/app-CKWIl_uF.js",
-    "name": "app",
+    "file": "assets/index-DdT1bwsR.js",
+    "name": "index",
     "src": "index.html",
     "isEntry": true,
     "dynamicImports": [
@@ -51,11 +51,11 @@
       "src/routes/_authenticated/ssl-manager/$id/index.lazy.tsx"
     ],
     "css": [
-      "assets/app-Dh3aIGuF.css"
+      "assets/index-BMLtFMXX.css"
     ]
   },
   "src/routes/_authenticated/access-list/index.lazy.tsx": {
-    "file": "assets/index.lazy-QVAggoZr.js",
+    "file": "assets/index.lazy-yQ9DwuBL.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/access-list/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -64,7 +64,7 @@
     ]
   },
   "src/routes/_authenticated/account/index.lazy.tsx": {
-    "file": "assets/index.lazy-CDYPt8k9.js",
+    "file": "assets/index.lazy-CR-gnECn.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/account/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -73,7 +73,7 @@
     ]
   },
   "src/routes/_authenticated/api-settings/index.lazy.tsx": {
-    "file": "assets/index.lazy-HNFeLDxn.js",
+    "file": "assets/index.lazy-BK3E8rwo.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/api-settings/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -82,7 +82,7 @@
     ]
   },
   "src/routes/_authenticated/general-settings/index.lazy.tsx": {
-    "file": "assets/index.lazy-Bu4oGH31.js",
+    "file": "assets/index.lazy-ksr0bnid.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/general-settings/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -91,7 +91,7 @@
     ]
   },
   "src/routes/_authenticated/logs-settings/index.lazy.tsx": {
-    "file": "assets/index.lazy-CZC3sN-n.js",
+    "file": "assets/index.lazy-BoDyQW_D.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/logs-settings/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -100,17 +100,17 @@
     ]
   },
   "src/routes/_authenticated/nginx-settings/index.lazy.tsx": {
-    "file": "assets/index.lazy-Cd6m6aRI.js",
+    "file": "assets/index.lazy-D1OJUooI.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/nginx-settings/index.lazy.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_confirm-dialog-DPh3pi1W.js"
+      "_confirm-dialog-BTp5LQSj.js"
     ]
   },
   "src/routes/_authenticated/notifications-settings/index.lazy.tsx": {
-    "file": "assets/index.lazy-DiiqPJ83.js",
+    "file": "assets/index.lazy-VgNYvx9y.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/notifications-settings/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -119,20 +119,20 @@
     ]
   },
   "src/routes/_authenticated/proxy-manager/index.lazy.tsx": {
-    "file": "assets/index.lazy-CstFqHNs.js",
+    "file": "assets/index.lazy-DC9gomqY.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/proxy-manager/index.lazy.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_use-dialog-state-CJEoq5dC.js",
-      "_data-table-faceted-filter-Ba8nO5Bx.js",
-      "_long-text-BBsbVaN6.js",
-      "_confirm-dialog-DPh3pi1W.js"
+      "_use-dialog-state-CpsiCG0p.js",
+      "_data-table-faceted-filter-Dju3LRXg.js",
+      "_long-text-c-PZ8jVc.js",
+      "_confirm-dialog-BTp5LQSj.js"
     ]
   },
   "src/routes/_authenticated/ssl-manager/$id/index.lazy.tsx": {
-    "file": "assets/index.lazy-B9gS79KD.js",
+    "file": "assets/index.lazy-pvyIRjNR.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/ssl-manager/$id/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -141,19 +141,19 @@
     ]
   },
   "src/routes/_authenticated/ssl-manager/index.lazy.tsx": {
-    "file": "assets/index.lazy-CK3voOLe.js",
+    "file": "assets/index.lazy--Cw5cNTu.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/ssl-manager/index.lazy.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_use-dialog-state-CJEoq5dC.js",
-      "_long-text-BBsbVaN6.js",
-      "_confirm-dialog-DPh3pi1W.js"
+      "_use-dialog-state-CpsiCG0p.js",
+      "_long-text-c-PZ8jVc.js",
+      "_confirm-dialog-BTp5LQSj.js"
     ]
   },
   "src/routes/_authenticated/templates/index.lazy.tsx": {
-    "file": "assets/index.lazy-4Nji1uQZ.js",
+    "file": "assets/index.lazy-C30Zo-Z2.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/templates/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -162,7 +162,7 @@
     ]
   },
   "src/routes/_authenticated/upstreams/index.lazy.tsx": {
-    "file": "assets/index.lazy-C3mJnyUi.js",
+    "file": "assets/index.lazy-gUWBg6eM.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/upstreams/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -171,7 +171,7 @@
     ]
   },
   "src/routes/_authenticated/uptime/index.lazy.tsx": {
-    "file": "assets/index.lazy-D1WqReFl.js",
+    "file": "assets/index.lazy-DcuFbGgk.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/uptime/index.lazy.tsx",
     "isDynamicEntry": true,
@@ -180,14 +180,14 @@
     ]
   },
   "src/routes/_authenticated/users/index.lazy.tsx": {
-    "file": "assets/index.lazy-BYsrM2aV.js",
+    "file": "assets/index.lazy-CednYXFI.js",
     "name": "index.lazy",
     "src": "src/routes/_authenticated/users/index.lazy.tsx",
     "isDynamicEntry": true,
     "imports": [
       "index.html",
-      "_use-dialog-state-CJEoq5dC.js",
-      "_data-table-faceted-filter-Ba8nO5Bx.js"
+      "_use-dialog-state-CpsiCG0p.js",
+      "_data-table-faceted-filter-Dju3LRXg.js"
     ]
   }
 }

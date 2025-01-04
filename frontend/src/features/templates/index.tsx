@@ -1,10 +1,5 @@
-import { FC } from "react";
 
-
-interface TemplatesProps {
-
-}
-const Templates: FC<TemplatesProps> = () => {
+const Templates= () => {
     return (
         <div>
             <h1>Templates</h1>

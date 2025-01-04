@@ -4,19 +4,25 @@ import (
 	"os"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/izetmolla/proxymanager/config"
 	"github.com/izetmolla/proxymanager/internal/panelApi/authorization"
 	"github.com/izetmolla/proxymanager/internal/panelApi/dashboard"
 	"github.com/izetmolla/proxymanager/internal/panelApi/nginxconfig"
 	proxyhosts "github.com/izetmolla/proxymanager/internal/panelApi/proxyHosts"
+	"github.com/izetmolla/proxymanager/internal/panelApi/setupApp"
 	"github.com/izetmolla/proxymanager/internal/panelApi/sslkeys"
 	"github.com/izetmolla/proxymanager/internal/panelApi/users"
 
 	jwtware "github.com/gofiber/contrib/jwt"
 )
 
-func handlePanelAPI(app *fiber.App) *fiber.App {
+func handlePanelAPI(app *fiber.App, server *config.ServerTypes) *fiber.App {
 	app.Post("/panelapi/sign-in", authorization.SignIn)
 	app.Post("/panelapi/refresh_token", authorization.GetRefreshToken)
+	if !server.Setup {
+		app.Post("/panelapi/setup/init", setupApp.InitSetup)
+		app.Get("/panelapi/setup/getdata", setupApp.GetData)
+	}
 	api := app.Group("/panelapi")
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "OK"})

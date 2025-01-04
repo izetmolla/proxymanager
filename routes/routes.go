@@ -11,7 +11,6 @@ import (
 	"github.com/izetmolla/proxymanager/frontend"
 	"github.com/izetmolla/proxymanager/internal/auth"
 	downloaddata "github.com/izetmolla/proxymanager/internal/downloadData"
-	"github.com/izetmolla/proxymanager/internal/panelApi/setupApp"
 	"gorm.io/gorm"
 )
 
@@ -21,18 +20,16 @@ func NewHandler(db *gorm.DB, server *config.ServerTypes) (*fiber.App, error) {
 	app.Get("/health", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "OK"})
 	})
-	app.Post("/panelapi/setup/init", setupApp.InitSetup)
 	app.Get("/download.php", downloaddata.Download)
-
-	if server, err := config.GetServer(); server.EnableSocialAuth && err == nil {
-		// Auth routes
+	// Auth routes
+	if server.EnableSocialAuth {
 		app.Get("/auth/:provider/callback", auth.CallBack)
 		app.Get("/logout/:provider", auth.Logout)
 		app.Get("/auth/:provider", auth.Provider)
 	}
 
 	app = handleAPI(app)
-	app = handlePanelAPI(app)
+	app = handlePanelAPI(app, server)
 
 	app.Use(filesystem.New(filesystem.Config{
 		Root:       http.FS(frontend.Assets()),

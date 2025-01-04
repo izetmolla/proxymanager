@@ -61,7 +61,7 @@ var rootCmd = &cobra.Command{
 	Long:  `ProxyManager is a stylish web-based application for managing proxy,loadbalancing and streaming using Nginx.`,
 	Run: initApp(func(cmd *cobra.Command, _ []string, d initData) {
 		_ = insertAdminUser(d.db)
-		server := getRunParams(cmd.Flags(), d.db)
+		server := getRunParams(cmd.Flags())
 		adr := server.Address + ":" + server.Port
 		app, err := routes.NewHandler(d.db, server)
 

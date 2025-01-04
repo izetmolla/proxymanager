@@ -7,60 +7,69 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { useFormContext } from "react-hook-form";
+import InfoTooltip from "../info-tooltip";
+import { FC, useState } from "react";
+import { CreateRequestTypes } from "@/types";
+import { GetSetupDataResponse } from "@/services/setup.service";
+import Select from "react-select/creatable";
 
-export function AddressStep() {
+interface GeneralStepProps {
+    data?: CreateRequestTypes<GetSetupDataResponse>
+}
+export const GeneralStep: FC<GeneralStepProps> = ({
+    data
+}) => {
     const form = useFormContext();
-
+    const [ipAddresses, setIpAddresses] = useState<{ label: string, value: string }[]>(data?.data.ips ?? [{ value: "0.0.0.0", label: "0.0.0.0" }]);
     return (
         <div className="space-y-4">
             <FormField
                 control={form.control}
-                name="address.street"
+                name="baseUrl"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Street Address</FormLabel>
+                        <FormLabel>Base URL</FormLabel>
                         <FormControl>
-                            <Input placeholder="123 Main St" {...field} />
+                            <Input placeholder="yourdomain.com" {...field} />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                 )}
             />
-            <FormField
-                control={form.control}
-                name="address.city"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>City</FormLabel>
-                        <FormControl>
-                            <Input placeholder="New York" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
-            />
-            <div className="grid grid-cols-2 gap-4">
+            <div className='grid grid-cols-[1fr_100px] gap-2'>
                 <FormField
                     control={form.control}
-                    name="address.state"
+                    name="address"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>State</FormLabel>
-                            <FormControl>
-                                <Input placeholder="NY" maxLength={2} {...field} />
-                            </FormControl>
+                            <FormLabel>
+                                Listen Address
+                                <span className="text-red-500 ml-1">*</span>
+                                <InfoTooltip content="Enter Your listen address" />
+                            </FormLabel>
+                            <Select
+                                {...field}
+                                value={ipAddresses?.find(({ value }) => value === field.value)}
+                                options={ipAddresses}
+                                onCreateOption={(inputValue) => {
+                                    console.log(inputValue);
+                                    setIpAddresses([...ipAddresses, { value: inputValue, label: inputValue }]);
+                                    form.setValue('address', inputValue);
+                                }}
+                                defaultValue={ipAddresses}
+                            />
                             <FormMessage />
                         </FormItem>
                     )}
                 />
                 <FormField
                     control={form.control}
-                    name="address.zipCode"
+                    name="port"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>ZIP Code</FormLabel>
+                            <FormLabel>Port</FormLabel>
                             <FormControl>
-                                <Input placeholder="10001" maxLength={5} {...field} />
+                                <Input placeholder="81" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
@@ -68,5 +77,5 @@ export function AddressStep() {
                 />
             </div>
         </div>
-    );
+    )
 }

@@ -2,7 +2,7 @@ import { FC } from 'react';
 import CreatableSelect from 'react-select/creatable';
 
 interface DomainsTagsInputProps extends React.ComponentProps<typeof CreatableSelect> {
-
+    test?: string
 }
 const DomainsTagsInput: FC<DomainsTagsInputProps> = ({ ...proos }) => {
     return (

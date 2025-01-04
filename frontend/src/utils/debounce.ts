@@ -1,4 +1,4 @@
-// eslint-disable-next-line
+/* eslint-disable */
 export function debounce<T extends (...args: any[]) => void>(
     func: T,
     wait: number,
