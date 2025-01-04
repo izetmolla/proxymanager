@@ -15,6 +15,7 @@ import { SecretsStep } from "./steps/secrets";
 import { CreateUserStep } from "./steps/user";
 import { signIn, useAppDispatch } from "@/store";
 import { setSetup } from "@/store/slices/generalSlice";
+import { useRouter } from "@tanstack/react-router";
 
 
 const generalSchema = z.object({
@@ -65,6 +66,7 @@ interface SetupStepsFormProps {
     data?: CreateRequestTypes<GetSetupDataResponse>
 }
 export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
+    const router = useRouter();
     const dispatch = useAppDispatch();
     const server = data?.data?.server;
     const [step, setStep] = useState(server?.step ?? 0);
@@ -118,8 +120,16 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
                     });
                     dispatch(signIn({ user, tokens }));
                     dispatch(setSetup(true))
+                    router.invalidate()
                 } else {
                     setStep(server.step);
+                    if (server.step === 1) {
+                        form.reset({
+                            ...form.getValues(),
+                            google_callback: `${server?.baseUrl}/auth/google/callback`,
+                            github_callback: `${server?.baseUrl}/auth/github/callback`,
+                        })
+                    }
                 }
             }
         }).catch(e => {

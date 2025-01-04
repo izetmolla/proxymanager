@@ -94,7 +94,6 @@ func SaveData(c *fiber.Ctx) error {
 		server.GithubKey = body.GithubKey
 		server.GithubSecret = body.GithubSecret
 		server.GithubCallback = body.GithubCallback
-		server.CredentialsLogin = body.CredentialsLogin
 		server.EnableSocialAuth = body.EnableSocialAuth
 		server.Step = 2
 		server.StepCompleted = []int{0, 1}
@@ -118,7 +117,8 @@ func SaveData(c *fiber.Ctx) error {
 		if err != nil {
 			return c.JSON(utils.Em(err))
 		}
-		server.Setup = false
+		server.CredentialsLogin = true
+		server.Setup = true
 		server.Step = 3
 		server.StepCompleted = []int{0, 1, 2}
 	}

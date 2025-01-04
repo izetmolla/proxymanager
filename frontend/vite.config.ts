@@ -52,7 +52,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       TanStackRouterVite(),
       viteReact(),
-      isDev && htmlPlugin()
+      isDev &&  htmlPlugin()
     ],
     resolve: {
       alias: {
