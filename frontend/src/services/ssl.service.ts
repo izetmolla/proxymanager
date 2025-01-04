@@ -43,3 +43,12 @@ export async function downloadSslKey(id: string) {
     })
 }
 
+
+
+export async function getSslKeysSearch(name: string) {
+    return ApiService.fetchData<ListResponseTypes<{ data: { label: string, value: string | number; }[] }>>({
+        url: '/ssl/search',
+        method: 'get',
+        params: { name },
+    })
+}

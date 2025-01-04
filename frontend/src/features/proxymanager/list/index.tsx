@@ -9,7 +9,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { columns } from "./components/columns";
 import { sortByToState, stateToSortBy } from "@/utils/table-sort-mapper";
 import { ProxyHostType } from "@/types/proxyhost";
-import { deleteProxyHost, getProxyHostList } from "@/services/proxyhost.service";
+import { deleteProxyHost, disableProxyHost, getProxyHostList } from "@/services/proxyhost.service";
 import { FC, useEffect, useState } from "react";
 import { Main } from "@/components/layout/main";
 import { Button } from "@/components/ui/button";
@@ -49,6 +49,24 @@ const ProxyManagersList: FC<ProxyHostListProps> = ({ id }) => {
         queryFn: () => getProxyHostList(filters).then((res) => res.data),
         placeholderData: keepPreviousData,
     });
+
+
+    const handleChangeStatus = (id: string, status: string) => {
+        disableProxyHost({ id, status }).then((res) => res.data).then(() => {
+            toast({
+                title: 'Success',
+                description: status == "disable" ? 'Proxy host disabled' : 'Proxy host enabled',
+            })
+            refetch()
+        }).catch((e) => {
+            toast({
+                title: 'Error',
+                description: e.message,
+                variant: "destructive",
+            })
+        })
+    }
+
     const table = useReactTable<ProxyHostType>({
         columns,
         state: {
@@ -70,6 +88,9 @@ const ProxyManagersList: FC<ProxyHostListProps> = ({ id }) => {
         },
         pageCount: data?.pageCount ?? -1,
         rowCount: data?.rowCount,
+        meta: {
+            handleChangeStatus
+        }
     });
 
 

@@ -1,5 +1,5 @@
 import { DotsHorizontalIcon } from '@radix-ui/react-icons'
-import { Row } from '@tanstack/react-table'
+import { Row, Table } from '@tanstack/react-table'
 import { IconTrash } from '@tabler/icons-react'
 import { Button } from '@/components/ui/button'
 import {
@@ -16,10 +16,12 @@ import { useRouter } from '@tanstack/react-router'
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>
+  table: Table<TData>
 }
 
 export function DataTableRowActions<TData>({
   row,
+  table
 }: DataTableRowActionsProps<TData>) {
   const router = useRouter()
   const { setOpen, setCurrentRow } = useProxyManagersContext()
@@ -46,6 +48,18 @@ export function DataTableRowActions<TData>({
           })}
         >
           Edit
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          onClick={() => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            const { handleChangeStatus } = table.options.meta as any
+            const { id, status } = row.original as ProxyHostType
+            if (handleChangeStatus) {
+              handleChangeStatus(id, status == "active" ? "disable" : "enable")
+            }
+          }}
+        >
+          {(row.original as ProxyHostType)?.status == "active" ? "Disable" : "Enable"}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
         <DropdownMenuItem

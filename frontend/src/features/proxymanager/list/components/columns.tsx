@@ -102,10 +102,10 @@ export const columns: ColumnDef<ProxyHostType>[] = [
         header: ({ column }) => (
             <DataTableColumnHeader column={column} title='SSL Keys' />
         ),
-        cell: ({ row }) => (<LongText>{row.original.ssl ?? "none"}</LongText>),
+        cell: ({ row }) => (<LongText>{row.original?.ssl?.type ?? "none"}</LongText>),
     },
     {
         id: 'actions',
-        cell: ({ row }) => <DataTableRowActions row={row} />,
+        cell: ({ row, table }) => <DataTableRowActions<ProxyHostType> row={row} table={table} />,
     },
 ]

@@ -30,6 +30,8 @@ func handlePanelAPI(app *fiber.App) *fiber.App {
 	api.Post("/proxyhosts/create", proxyhosts.CreateProxyHost)
 	api.Post("/proxyhosts/overview/save", proxyhosts.SaveProxyHostOverview)
 	api.Delete("/proxyhosts/delete", proxyhosts.DeleteProxyHost)
+	api.Get("/proxyhosts/disable", proxyhosts.DisableProxyHost)
+	api.Get("/proxyhosts/enable", proxyhosts.EnableProxyHost)
 
 	api.Get("/dashboard/getdata", dashboard.GetData)
 
@@ -43,6 +45,7 @@ func handlePanelAPI(app *fiber.App) *fiber.App {
 	api.Post("/ssl/create", sslkeys.CreateSslKey)
 	api.Delete("/ssl/delete", sslkeys.DeleteSSLKey)
 	api.Get("/ssl/download", sslkeys.DownloadSslKey)
+	api.Get("/ssl/search", sslkeys.SearchKeys)
 
 	// Catch all other routes
 	api.All("*", func(c *fiber.Ctx) error {

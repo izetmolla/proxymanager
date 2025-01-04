@@ -10,7 +10,8 @@ export function ComponentNavigation() {
     const navItems = [
         { nav: "overview", name: "Overview", href: `/proxy-manager/${id}/overview` },
         { nav: "locations", name: "Locations", href: `/proxy-manager/${id}/locations` },
-        { nav: "ssl", name: "SSL Keys", href: `/proxy-manager/${id}/ssl` }
+        { nav: "ssl", name: "SSL Keys", href: `/proxy-manager/${id}/ssl` },
+        { nav: "logs", name: "Logs", href: `/proxy-manager/${id}/logs` },
     ]
 
     return (

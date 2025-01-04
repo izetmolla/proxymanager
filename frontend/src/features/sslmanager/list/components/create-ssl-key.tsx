@@ -100,7 +100,11 @@ export function CreateSslKey({ open, onOpenChange, onCreated }: Props) {
             .then((res) => res.data)
             .then(({ error, data }) => {
                 if (error) {
-                    setError(error.message)
+                    if (error.path) {
+                        form.setError(error.path as 'ssl_key' | 'ssl_certificate' | 'domains' | 'name', { message: error.message })
+                    } else {
+                        setError(error.message)
+                    }
                     setLoading(false)
                 } else {
                     if (data.id) {
@@ -224,7 +228,8 @@ export function CreateSslKey({ open, onOpenChange, onCreated }: Props) {
                                             </FormLabel>
                                             <FormControl>
                                                 <Textarea
-                                                    placeholder='=='
+                                                    style={{ minHeight: '100px' }}
+                                                    placeholder='-----BEGIN CERTIFICATE-----'
                                                     {...field}
                                                 />
                                             </FormControl>
@@ -242,7 +247,8 @@ export function CreateSslKey({ open, onOpenChange, onCreated }: Props) {
                                             </FormLabel>
                                             <FormControl>
                                                 <Textarea
-                                                    placeholder='=='
+                                                    style={{ minHeight: '100px' }}
+                                                    placeholder='-----BEGIN PRIVATE KEY-----'
                                                     {...field}
                                                 />
                                             </FormControl>

@@ -49,7 +49,8 @@ export async function saveProxyHostOverview(data: OverviewForm) {
         data: {
             id: data.id,
             domains: data.domains.map((d) => d.value),
-            enableSSL:data.enableSSL,
+            enableSSL: data.enableSSL,
+            sslKeyId: data.sslKeyId,
             locations: [{
                 path: '/',
                 proxy_pass: `${data.protocol}://${data.host}`,
@@ -64,5 +65,13 @@ export async function deleteProxyHost(params: { id: string }) {
         url: '/proxyhosts/delete',
         method: 'delete',
         params,
+    })
+}
+
+export async function disableProxyHost({ id, status }: { id: string, status: string }) {
+    return ApiService.fetchData<CreateRequestTypes<null>>({
+        url: `/proxyhosts/${status}`,
+        method: 'get',
+        params: { id },
     })
 }

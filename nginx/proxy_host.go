@@ -44,23 +44,21 @@ type ProxyHost struct {
 }
 
 func (ng *Nginx) UpdateProxyHost(options *CreateNewProxyHostOptions) (err error) {
-	if options.SSLType == "" {
-		options.SSLType = "auto"
-	}
+	fmt.Println("SSLEnabled", options.SSLEnabled)
 	if len(options.Domains) == 0 {
 		return fmt.Errorf("domain is required")
 	}
 	hostPath := createProxyHostDirectories(filepath.Join(ng.ConfigPath, "hosts", options.ID))
 	sslPath := createProxyHostSslDirectories(filepath.Join(ng.ConfigPath, "ssl", options.SSLID))
-
-	if options.SSLType == "auto" && !checkForSelfSSL(sslPath, "auto") {
-		options.SSLEnabled = true
-		_ = generateSelfSSL("ssl", sslPath, ng.SSL.Org)
-	}
-	if options.SSLType == "custom" && !checkForSelfSSL(sslPath, "custom") {
-		options.SSLEnabled = true
-		if err := insertCustomSsl(sslPath, options.SSLKey, options.SSLCertificate); err != nil {
-			return err
+	if options.SSLEnabled {
+		if options.SSLType == "" {
+			options.SSLType = "auto"
+		}
+		if options.SSLType == "auto" && !checkForSelfSSL(sslPath, "auto") {
+			_ = generateSelfSSL("ssl", sslPath, ng.SSL.Org)
+		}
+		if options.SSLType == "custom" && !existOnDisk(sslPath, "custom", "ssl.key") {
+			return fmt.Errorf("custom ssl not found")
 		}
 	}
 

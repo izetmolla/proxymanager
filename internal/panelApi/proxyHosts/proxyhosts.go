@@ -146,6 +146,7 @@ func GetProxyHost(c *fiber.Ctx) error {
 			"enableSSL": ph.EnableSSL,
 			"status":    ph.Status,
 			"ssl":       ph.Ssl,
+			"sslKeyId":  ph.SslKeyID,
 		},
 	})
 }
@@ -157,6 +158,7 @@ type SaveProxyHostOverviewRequest struct {
 	Host      string                    `json:"host"`
 	Locations []nginx.ProxyHostLocation `json:"locations"`
 	EnableSSL bool                      `json:"enableSSL"`
+	SslKeyID  string                    `json:"sslKeyId"`
 }
 
 func SaveProxyHostOverview(c *fiber.Ctx) error {
@@ -187,22 +189,30 @@ func SaveProxyHostOverview(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
+	if body.SslKeyID != ph.SslKeyID {
+		if newSslKey, err := models.GetSslKeyByID(config.DB, body.SslKeyID); err != nil {
+			return c.JSON(utils.Emp(err, "sslKeyId"))
+		} else {
+			ph.Ssl = newSslKey
+		}
+	}
 
 	if err = config.NGINX.UpdateProxyHost(&nginx.CreateNewProxyHostOptions{
 		ID:         ph.ID,
 		Domains:    domains,
 		Locations:  locations,
-		SSLEnabled: *ph.EnableSSL,
+		SSLEnabled: body.EnableSSL,
 		SSLType:    ph.Ssl.Type,
-		SSLID:      ph.Ssl.ID,
+		SSLID:      body.SslKeyID,
 	}); err != nil {
-		go deleteDomains(body.Domains, ph.ID)
 		go models.SetProxyHostStatus(config.DB, ph.ID, "error", err.Error())
 		return c.JSON(utils.Em(err))
 	}
+
 	models.SetProxyHost(config.DB, ph.ID, &models.ProxyHost{
 		Status:    "active",
 		EnableSSL: &body.EnableSSL,
+		SslKeyID:  body.SslKeyID,
 	})
 	return c.JSON(fiber.Map{})
 }
@@ -228,11 +238,64 @@ func DeleteProxyHost(c *fiber.Ctx) error {
 	})
 }
 
-func deleteDomains(domains []string, proxyHostId string) error {
-	for _, domain := range domains {
-		if err := config.DB.Delete(&models.Domain{}, "name = ? AND proxy_host_id = ?", domain, proxyHostId).Error; err != nil {
-			return err
-		}
+func DisableProxyHost(c *fiber.Ctx) error {
+	ph, err := models.GetProxyHostByID(config.DB, c.Query("id", ""))
+	if err != nil {
+		return c.JSON(utils.Em(err))
 	}
-	return nil
+	if ph.ID == "" {
+		return c.JSON(utils.Em(fmt.Errorf("proxy host not found")))
+	}
+	domains := make([]string, len(ph.Domains))
+	for i := 0; i < len(ph.Domains); i++ {
+		domains[i] = ph.Domains[i].Name
+	}
+	if err := config.NGINX.DisableProxyHost(ph.ID, domains); err != nil {
+		return c.JSON(utils.Em(err))
+	}
+
+	if err := models.SetProxyHost(config.DB, ph.ID, &models.ProxyHost{
+		Status: "disabled",
+	}); err != nil {
+		return c.JSON(utils.Em(err))
+	}
+	return c.JSON(fiber.Map{
+		"data": ph,
+	})
+}
+
+func EnableProxyHost(c *fiber.Ctx) error {
+	ph, err := models.GetProxyHostByID(config.DB, c.Query("id", ""))
+	if err != nil {
+		return c.JSON(utils.Em(err))
+	}
+	if ph.ID == "" {
+		return c.JSON(utils.Em(fmt.Errorf("proxy host not found")))
+	}
+
+	domains := make([]string, len(ph.Domains))
+	for i := 0; i < len(ph.Domains); i++ {
+		domains[i] = ph.Domains[i].Name
+	}
+
+	if err = config.NGINX.UpdateProxyHost(&nginx.CreateNewProxyHostOptions{
+		ID:         ph.ID,
+		Domains:    domains,
+		Locations:  models.FormatLocations(ph.Locations),
+		SSLEnabled: *ph.EnableSSL,
+		SSLType:    ph.Ssl.Type,
+		SSLID:      ph.SslKeyID,
+	}); err != nil {
+		go models.SetProxyHostStatus(config.DB, ph.ID, "error", err.Error())
+		return c.JSON(utils.Em(err))
+	}
+
+	if err := models.SetProxyHost(config.DB, ph.ID, &models.ProxyHost{
+		Status: "active",
+	}); err != nil {
+		return c.JSON(utils.Em(err))
+	}
+	return c.JSON(fiber.Map{
+		"data": ph,
+	})
 }

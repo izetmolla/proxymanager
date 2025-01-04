@@ -28,13 +28,11 @@ export const DEFAULT_PAGE_SIZE = 10;
 // }
 
 interface DataTableProps<TData> {
-
     table: ReturnType<typeof useReactTable<TData>>
-
 }
 
 export function DataTable<T>({
-    table
+    table,
 }: DataTableProps<T>) {
     // const [rowSelection, setRowSelection] = React.useState({})
     // const [columnVisibility, setColumnVisibility] =

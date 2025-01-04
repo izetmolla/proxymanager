@@ -22,6 +22,8 @@ import { useToast } from '@/hooks/use-toast'
 import ProxyPassInput from '@/components/proxy-pass-input'
 import { extractProxyPassFromLocations } from '@/utils/proxypass'
 import { Checkbox } from '@/components/ui/checkbox'
+import { Button } from '@/components/ui/button'
+import { SslSelector } from '@/components/ssl-selector'
 
 const formSchema = z
     .object({
@@ -33,6 +35,7 @@ const formSchema = z
         protocol: z.string().min(1, { message: 'Protocol is required.' }),
         host: z.string().min(1, { message: 'Host is required.' }),
         enableSSL: z.boolean(),
+        sslKeyId: z.string().optional()
     })
 export type OverviewForm = z.infer<typeof formSchema>
 
@@ -43,6 +46,8 @@ interface Props {
 export function ProxyHostOverviewForm({
     proxyHost
 }: Props) {
+    const [isSslEnabled, setIsSslEnabled] = useState(proxyHost.enableSSL ?? false)
+    const [sslKeyId, setSslKeyId] = useState<string>(proxyHost?.sslKeyId ?? '')
     const { toast } = useToast()
     const [lloading, setLoading] = useState(false)
     const { protocol, host } = extractProxyPassFromLocations(proxyHost.locations)
@@ -53,7 +58,8 @@ export function ProxyHostOverviewForm({
             domains: proxyHost.domains.map((d) => ({ label: d, value: d })),
             protocol: protocol ?? 'http',
             host: host ?? '',
-            enableSSL: proxyHost?.enableSSL ?? false
+            enableSSL: proxyHost?.enableSSL ?? false,
+            sslKeyId: sslKeyId
         }
     })
 
@@ -128,6 +134,12 @@ export function ProxyHostOverviewForm({
 
                             <ProxyPassInput control={form.control} hostProps={{ placeholder: 'localhost:3000' }} protocolProps={{}} />
 
+
+                        </FormGroup>
+                        <FormGroup
+                            title="SSL Options"
+                            description="Set Your SSL Options Here"
+                        >
                             <div className='col-span-full'>
                                 <FormField
                                     control={form.control}
@@ -137,7 +149,10 @@ export function ProxyHostOverviewForm({
                                             <FormControl>
                                                 <Checkbox
                                                     checked={field.value}
-                                                    onCheckedChange={field.onChange}
+                                                    onCheckedChange={(e) => {
+                                                        field.onChange(e)
+                                                        setIsSslEnabled(e as boolean)
+                                                    }}
                                                 />
                                             </FormControl>
                                             <div className="space-y-1 leading-none">
@@ -148,9 +163,32 @@ export function ProxyHostOverviewForm({
                                         </FormItem>
                                     )}
                                 />
-
                             </div>
+                            {isSslEnabled && (
+                                <div className='col-span-full'>
+                                    <div className='grid grid-cols-[1fr_100px] gap-2'>
+                                        <div>
+                                            <SslSelector
+                                                onChange={(x) => {
+                                                    console.log(x)
+                                                    form.setValue('sslKeyId', x)
+                                                    setSslKeyId(x)
+                                                }}
+                                                defaultValue={proxyHost?.ssl ? [{ value: proxyHost.ssl.id, label: proxyHost.ssl.name }] : []}
+                                                value={proxyHost?.ssl ? { value: proxyHost.ssl.id, label: proxyHost.ssl.name } : undefined}
+                                            />
+                                        </div>
+                                        <div className='w-[100px] flex items-center'>
+                                            <Button
+                                                type='button'
+                                                size="sm"
+                                            >Insert SSL</Button>
+                                        </div>
+                                    </div>
+                                    {/* <div style={{ height: '150px' }}/> */}
 
+                                </div>
+                            )}
                         </FormGroup>
                     </div>
                     <FormFooter

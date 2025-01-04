@@ -89,3 +89,19 @@ func updateLocationProperties(db *gorm.DB, locationID string, properties []strin
 
 	return nil
 }
+
+func FormatLocations(locations []Location) []nginx.ProxyHostLocation {
+	locationsFormatted := make([]nginx.ProxyHostLocation, len(locations))
+	for i := 0; i < len(locations); i++ {
+		properties := make([]string, len(locations[i].Properties))
+		for k, v := range locations[i].Properties {
+			properties[k] = v.Property
+		}
+		locationsFormatted[i] = nginx.ProxyHostLocation{
+			ProxyPass:  locations[i].ProxyPass,
+			Path:       locations[i].Path,
+			Properties: properties,
+		}
+	}
+	return locationsFormatted
+}

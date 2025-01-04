@@ -148,13 +148,3 @@ func randomString(length int) string {
 	}
 	return string(b)
 }
-
-func insertCustomSsl(sslPath, ssl_key, ssl_cert string) error {
-	if err := WriteToFile(filepath.Join(sslPath, "custom", "ssl.key"), ssl_key); err != nil {
-		return err
-	}
-	if err := WriteToFile(filepath.Join(sslPath, "custom", "ssl.crt"), ssl_cert); err != nil {
-		return err
-	}
-	return nil
-}

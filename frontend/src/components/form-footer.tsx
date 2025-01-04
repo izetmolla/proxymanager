@@ -28,26 +28,26 @@ export default function FormFooter({
     return (
         <div
             className={cn(
-                'sticky bottom-0 left-0 right-0 z-10 -mb-8 flex items-center justify-end gap-4 border-t  px-4 py-4 md:px-5 lg:px-6 3xl:px-8 4xl:px-10',
-                className,
-                negMargin
+            'sticky bottom-0 left-0 right-0 z-10 -mb-8 flex items-center justify-end gap-4 border-t  px-4 py-4 md:px-5 lg:px-6 3xl:px-8 4xl:px-10 bg-white dark:bg-gray-800',
+            className,
+            negMargin
             )}
         >
             {hasCancel ? <Button
-                variant="outline"
-                className="w-full @xl:w-auto"
-                onClick={handleAltBtn}
-                id={id}
+            variant="outline"
+            className="w-full @xl:w-auto"
+            onClick={handleAltBtn}
+            id={id}
             >
-                {altBtnText}
+            {altBtnText}
             </Button> : <div />}
             {otherButton && <Fragment>{otherButton}</Fragment>}
 
 
             <div>
-                <Button type="submit" disabled={isLoading} className="w-full @xl:w-min" id={id}>
-                    {submitBtnText} {isLoading && '...'}
-                </Button>
+            <Button type="submit" disabled={isLoading} className="w-full @xl:w-min" id={id}>
+                {submitBtnText} {isLoading && '...'}
+            </Button>
             </div>
         </div>
     );

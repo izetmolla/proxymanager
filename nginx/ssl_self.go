@@ -86,3 +86,63 @@ func generatePrivateKey(file string, keyType certcrypto.KeyType) (crypto.Private
 
 	return privateKey, nil
 }
+
+func IsValidSSLKey(cert string) error {
+	block, _ := pem.Decode([]byte(cert))
+	if block == nil {
+		return fmt.Errorf("invalid certificate")
+	}
+	switch block.Type {
+	case "RSA PRIVATE KEY":
+		_, err := x509.ParsePKCS1PrivateKey(block.Bytes)
+		if err != nil {
+			return fmt.Errorf("not a valid RSA private key: %s", err)
+		} else {
+			return nil
+		}
+	case "PRIVATE KEY":
+		_, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			return fmt.Errorf("not a valid PKCS#8 private key: %s", err)
+		} else {
+			return nil
+		}
+	case "EC PRIVATE KEY":
+		_, err := x509.ParseECPrivateKey(block.Bytes)
+		if err != nil {
+			return fmt.Errorf("not a valid EC private key: %s", err)
+		} else {
+			return nil
+		}
+	case "PUBLIC KEY":
+		_, err := x509.ParsePKIXPublicKey(block.Bytes)
+		if err != nil {
+			return fmt.Errorf("not a valid public key: %s", err)
+		} else {
+			return nil
+		}
+	default:
+		return fmt.Errorf("unknown key type: %s", block.Type)
+	}
+
+}
+
+func IsValidSSLCertificate(ssl_cert string) (*x509.Certificate, error) {
+	// Decode the PEM block
+	block, _ := pem.Decode([]byte(ssl_cert))
+	if block == nil {
+		return nil, fmt.Errorf("failed to decode block")
+	}
+
+	// Check the block type
+	if block.Type != "CERTIFICATE" {
+		return nil, fmt.Errorf("unknown key type: %s", block.Type)
+	}
+
+	// Parse the certificate
+	cert, err := x509.ParseCertificate(block.Bytes)
+	if err != nil {
+		return nil, fmt.Errorf("error parsing certificate: %s", err)
+	}
+	return cert, nil
+}

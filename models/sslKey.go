@@ -16,6 +16,12 @@ type SslKey struct {
 	PublicKey  string      `json:"public_key"`
 	ProxyHosts []ProxyHost `json:"proxy_hosts" gorm:"foreignKey:SslKeyID;constraint:OnUpdate:CASCADE,OnDelete:SET NULL;"`
 
+	Subject            string    `json:"subject"`
+	Issuer             string    `json:"issuer"`
+	NotBefore          time.Time `json:"not_before"`
+	NotAfter           time.Time `json:"not_after"`
+	PublicKeyAlgorithm string    `json:"public_key_algorithm"`
+
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -30,4 +36,11 @@ func CreateSslKey(db *gorm.DB) (ssl SslKey, err error) {
 		return ssl, res.Error
 	}
 	return ssl, err
+}
+
+func GetSslKeyByID(db *gorm.DB, id string) (ssl SslKey, err error) {
+	if res := db.Model(&SslKey{}).Where("id = ?", id).First(&ssl); res.Error != nil {
+		return ssl, err
+	}
+	return ssl, nil
 }
