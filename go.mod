@@ -6,6 +6,7 @@ require (
 	github.com/go-acme/lego/v4 v4.21.0
 	github.com/gofiber/fiber/v2 v2.52.5
 	github.com/google/uuid v1.6.0
+	github.com/markbates/goth v1.80.0
 	github.com/mitchellh/go-homedir v1.1.0
 	github.com/spf13/cobra v1.8.1
 	github.com/spf13/pflag v1.0.5
@@ -14,7 +15,11 @@ require (
 	gorm.io/gorm v1.25.12
 )
 
-require github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
+require (
+	cloud.google.com/go/compute/metadata v0.6.0 // indirect
+	github.com/MicahParks/keyfunc/v2 v2.1.0 // indirect
+	golang.org/x/oauth2 v0.24.0 // indirect
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect

@@ -44,7 +44,6 @@ type ProxyHost struct {
 }
 
 func (ng *Nginx) UpdateProxyHost(options *CreateNewProxyHostOptions) (err error) {
-	fmt.Println("SSLEnabled", options.SSLEnabled)
 	if len(options.Domains) == 0 {
 		return fmt.Errorf("domain is required")
 	}

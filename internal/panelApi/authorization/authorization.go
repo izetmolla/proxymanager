@@ -48,7 +48,7 @@ func GetRefreshToken(c *fiber.Ctx) error {
 		return c.Status(401).JSON(err)
 	}
 
-	srv, _ := config.GetServer(config.DB)
+	srv, _ := config.GetServer()
 	accessToken, err := config.GenerateAccessToken(tk.UserID, []string{}, srv.AccessTokenSecret, srv.AccessTokenExp, srv.TokensIssuer)
 	if err != nil {
 		return c.Status(401).JSON(err)

@@ -19,7 +19,7 @@ type Tokens struct {
 }
 
 func GenerateTokens(usrID string, roles []string) (tokens Tokens, err error) {
-	srv, _ := GetServer(DB)
+	srv, _ := GetServer()
 	access_token, err := GenerateAccessToken(usrID, roles, srv.AccessTokenSecret, srv.AccessTokenExp, srv.TokensIssuer)
 	if err != nil {
 		return tokens, err

@@ -8,6 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/filesystem"
 	"github.com/izetmolla/proxymanager/config"
 	"github.com/izetmolla/proxymanager/frontend"
+	"github.com/izetmolla/proxymanager/internal/auth"
 	downloaddata "github.com/izetmolla/proxymanager/internal/downloadData"
 	"gorm.io/gorm"
 )
@@ -18,6 +19,14 @@ func NewHandler(db *gorm.DB, server *config.ServerTypes) (*fiber.App, error) {
 		return c.JSON(fiber.Map{"status": "OK"})
 	})
 	app.Get("/download.php", downloaddata.Download)
+
+	if server, err := config.GetServer(); server.EnableSocialAuth && err == nil {
+		// Auth routes
+		app.Get("/auth/:provider/callback", auth.CallBack)
+		app.Get("/logout/:provider", auth.Logout)
+		app.Get("/auth/:provider", auth.Provider)
+	}
+
 	app = handleAPI(app)
 	app = handlePanelAPI(app)
 

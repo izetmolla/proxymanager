@@ -48,7 +48,7 @@ func setOnEmptyString(val, def string) string {
 }
 
 func getRunParams(flags *pflag.FlagSet, db *gorm.DB) *config.ServerTypes {
-	server, err := config.GetServer(db)
+	server, err := config.GetServer()
 	checkErr(err)
 
 	if val, set := getParamB(flags, "address"); set {
@@ -99,6 +99,42 @@ func getRunParams(flags *pflag.FlagSet, db *gorm.DB) *config.ServerTypes {
 		server.TokensIssuer = val
 	} else {
 		server.TokensIssuer = setOnEmptyString("", "FLowTrove")
+	}
+
+	// Goauth
+	if val, set := getParamB(flags, "google_key"); set {
+		server.GoogleKey = val
+	} else {
+		server.GoogleKey = setOnEmptyString(server.GoogleKey, "")
+	}
+
+	if val, set := getParamB(flags, "google_secret"); set {
+		server.GoogleSecret = val
+	} else {
+		server.GoogleSecret = setOnEmptyString(server.GoogleSecret, "")
+	}
+
+	if val, set := getParamB(flags, "google_callback"); set {
+		server.GoogleCallback = val
+	} else {
+		server.GoogleCallback = setOnEmptyString(server.GoogleCallback, "")
+	}
+
+	if val, set := getParamB(flags, "github_key"); set {
+		server.GithubKey = val
+	} else {
+		server.GithubKey = setOnEmptyString(server.GithubKey, "")
+	}
+
+	if val, set := getParamB(flags, "github_secret"); set {
+		server.GithubSecret = val
+	} else {
+		server.GithubSecret = setOnEmptyString(server.GithubSecret, "")
+	}
+	if val, set := getParamB(flags, "github_callback"); set {
+		server.GithubCallback = val
+	} else {
+		server.GithubCallback = setOnEmptyString(server.GithubCallback, "")
 	}
 
 	_, _ = config.SetServer(db, *server)

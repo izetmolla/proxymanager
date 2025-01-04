@@ -45,6 +45,14 @@ func addServerFlags(flags *pflag.FlagSet) {
 	flags.StringP("baseurl", "b", "", "base url")
 	flags.String("access_token_exp", "1m", "Access Token session timeout")
 	flags.String("refresh_token_exp", "8760h", "Refresh Token session timeout")
+
+	//Goauth
+	flags.String("google_key", "", "Google Key for login with google")
+	flags.String("google_secret", "", "Google Secret for login with google")
+	flags.String("google_callback", "", "Google Callback url for login with google")
+	flags.String("github_key", "", "Github Key for login with github")
+	flags.String("github_secret", "", "Github Secret for login with github")
+	flags.String("github_callback", "", "Github Callback Url for login with github")
 }
 
 var rootCmd = &cobra.Command{
@@ -91,6 +99,8 @@ func initApp(fn pythonFunc) cobraFunc {
 			IsNginxConfigured: config.IsNginxConfigured(data.db),
 			MainFileDB:        lco.MainFileDB,
 		}, data.db)
+		checkErr(err)
+		err = config.InitSocialAuth(data.db)
 		checkErr(err)
 		fn(cmd, args, data)
 	}

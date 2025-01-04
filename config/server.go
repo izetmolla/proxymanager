@@ -16,6 +16,15 @@ type ServerTypes struct {
 	AccessTokenExp     string `json:"access_token_exp"`
 	RefreshTokenExp    string `json:"refresh_token_exp"`
 	TokensIssuer       string `json:"tokens_issuer"`
+
+	// Goauth
+	EnableSocialAuth bool   `json:"enable_social_auth"`
+	GoogleKey        string `json:"google_key"`
+	GoogleSecret     string `json:"google_secret"`
+	GoogleCallback   string `json:"google_callback"`
+	GithubKey        string `json:"github_key"`
+	GithubSecret     string `json:"github_secret"`
+	GithubCallback   string `json:"github_callback"`
 }
 
 var server *ServerTypes
@@ -29,6 +38,12 @@ func SetServer(db *gorm.DB, newParams ServerTypes) (*ServerTypes, error) {
 		server.AccessTokenExp = newParams.AccessTokenExp
 		server.RefreshTokenExp = newParams.RefreshTokenExp
 		server.TokensIssuer = newParams.TokensIssuer
+		server.GoogleKey = newParams.GoogleKey
+		server.GoogleSecret = newParams.GoogleSecret
+		server.GoogleCallback = newParams.GoogleCallback
+		server.GithubKey = newParams.GithubKey
+		server.GithubSecret = newParams.GithubSecret
+		server.GithubCallback = newParams.GithubCallback
 	}
 	st, err := serverTypesToString(server)
 	if err != nil {
@@ -40,17 +55,17 @@ func SetServer(db *gorm.DB, newParams ServerTypes) (*ServerTypes, error) {
 	return server, nil
 }
 
-func GetServer(db *gorm.DB) (*ServerTypes, error) {
+func GetServer() (*ServerTypes, error) {
 	opt := models.Option{}
 	if server != nil {
 		return server, nil
 	}
-	if res := db.Model(&models.Option{}).Where("option = ?", "server_config").First(&opt); res.Error != nil {
+	if res := DB.Model(&models.Option{}).Where("option = ?", "server_config").First(&opt); res.Error != nil {
 		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
 			st, _ := serverTypesToString(&ServerTypes{Address: "0.0.0.0", Port: "81"})
 			opt.Value = st
 			opt.Option = "server_config"
-			if res := db.Create(&opt); res.Error != nil {
+			if res := DB.Create(&opt); res.Error != nil {
 				return server, res.Error
 			}
 		} else {
