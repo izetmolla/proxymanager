@@ -1,1 +1,0 @@
-import{x as e,j as t}from"./index-B8FHcfP5.js";const a=e("/_authenticated/general-settings/")({component:n});function n(){return t.jsx("div",{children:'Hello "/_authenticated/general-settings/"!'})}export{a as Route};

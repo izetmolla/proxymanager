@@ -1,1 +1,0 @@
-import{x as e,j as t}from"./index-B8FHcfP5.js";const a=e("/_authenticated/ssl-manager/")({component:n});function n(){return t.jsx("div",{children:'Hello "/_authenticated/ssl-manager/"!'})}export{a as Route};

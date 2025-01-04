@@ -44,16 +44,16 @@ export default defineConfig({
   build: {
     manifest: true,
     outDir: 'build',
-    // rollupOptions: {
-    //   output: {
-    //     // Define the file name pattern to avoid underscores
-    //     entryFileNames: 'assets/[name].[hash].js',
-    //     chunkFileNames: 'assets/cf_[name].[hash].js',
-    //     assetFileNames: 'assets/[name].[hash].[ext]',
-    //   },
-    //   input: {
-    //     app: './index.html',
-    //   },
-    // },
+    rollupOptions: {
+      //   output: {
+      //     // Define the file name pattern to avoid underscores
+      //     entryFileNames: 'assets/[name].[hash].js',
+      //     chunkFileNames: 'assets/cf_[name].[hash].js',
+      //     assetFileNames: 'assets/[name].[hash].[ext]',
+      //   },
+      input: {
+        app: './prod.html',
+      },
+    },
   },
 })
