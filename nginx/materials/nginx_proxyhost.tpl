@@ -1,11 +1,12 @@
 # HTTP config for {{.ID}}
 server{
     server_name{{ range .Domains }} {{ . }}{{ end }};
-    listen 80;
-    listen [::]:80;
+    listen {{.NginxIpv4Address}}:{{.NginxHTTPPort}};{{if .EnableNginxIpv6 }}
+	listen [{{.NginxIpv6Address}}]:{{.NginxHTTPPort}};{{end}}
+
     {{ if .ProxyHostSSL.Enabled }}
-    listen 443 ssl{{ if .ProxyHostSSL.HTTP2 }} http2{{ end }};
-    listen [::]:443 ssl{{ if .ProxyHostSSL.HTTP2 }} http2{{ end }};
+    listen {{.NginxIpv4Address}}:{{.NginxHTTPSPort}} ssl{{ if .ProxyHostSSL.HTTP2 }} http2{{ end }};
+    listen [{{.NginxIpv6Address}}]:{{.NginxHTTPSPort}} ssl{{ if .ProxyHostSSL.HTTP2 }} http2{{ end }};
 	ssl_certificate {{.SslPath}}/{{ .ProxyHostSSL.Certificate }};
     ssl_certificate_key {{.SslPath}}/{{ .ProxyHostSSL.CertificateKey }};
     {{ if  .ProxyHostSSL.Hsts }}# HSTS (ngx_http_headers_module is required) (63072000 seconds = 2 years)

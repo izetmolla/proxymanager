@@ -17,7 +17,7 @@ func (ng *Nginx) Status() (string, error) {
 	}
 }
 
-func (ng *Nginx) CheckAndUpdate(hostID string, dm []string, https bool, le any) (err error) {
+func (ng *Nginx) CheckAndUpdate(hostID string, options *CreateNewProxyHostOptions) (err error) {
 	hp := filepath.Join(ng.ConfigPath, "hosts", hostID)
 	if err := insertLineToFile(ng.MainFilePath, mainFileLine(hp)); err != nil {
 		return err
@@ -28,16 +28,21 @@ func (ng *Nginx) CheckAndUpdate(hostID string, dm []string, https bool, le any) 
 			return restoreErr
 		}
 		_ = removeProxyHostBackupConfig(hp)
-		_, errNewReload := ng.Reload()
-		if errNewReload != nil {
-			if errRemoveLine := removeLineFromFile(ng.MainFilePath, mainFileLine(hp)); errRemoveLine != nil {
-				_, _ = ng.Reload()
+		if !options.NoReload {
+			_, errNewReload := ng.Reload()
+			if errNewReload != nil {
+				if errRemoveLine := removeLineFromFile(ng.MainFilePath, mainFileLine(hp)); errRemoveLine != nil {
+					_, _ = ng.Reload()
+				}
 			}
 		}
-		return err
+		return nil
 	} else {
-		if message, err := ng.Reload(); err != nil {
-			return fmt.Errorf("%s %s", err.Error(), message)
+		if !options.NoReload {
+
+			if message, err := ng.Reload(); err != nil {
+				return fmt.Errorf("%s %s", err.Error(), message)
+			}
 		}
 		// if https && le != nil && ssl.IsLetEncryptExpired(filepath.Join(hp, fmt.Sprintf("config.%s", ng.ConfigExtension))) {
 		// 	go generateLESSL(hostID, dm, ng, le)

@@ -84,3 +84,11 @@ func UpdateProxyHostDomains(db *gorm.DB, phID string, domains []string) ([]strin
 
 	return domains, nil
 }
+
+func FormatDomains(dms []Domain) []string {
+	domains := make([]string, len(dms))
+	for i := 0; i < len(dms); i++ {
+		domains[i] = dms[i].Name
+	}
+	return domains
+}

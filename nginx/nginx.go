@@ -55,12 +55,12 @@ type NginxInitOptions struct {
 	File404DB       bool
 	File500DB       bool
 
-	EnableNginxIpv6    bool   `json:"enableNginxIpv6"`
-	EnableNginxStreams bool   `json:"enableNginxStreams"`
-	NginxIpv4Address   string `json:"nginxIpv4Address"`
-	NginxIpv6Address   string `json:"nginxIpv6Address"`
-	NginxHTTPPort      string `json:"nginxHTTPPort"`
-	NginxHTTPSPort     string `json:"nginxHTTPSPort"`
+	EnableNginxIpv6    bool
+	EnableNginxStreams bool
+	NginxIpv4Address   string
+	NginxIpv6Address   string
+	NginxHTTPPort      string
+	NginxHTTPSPort     string
 }
 
 func Open(opt *NginxInitOptions) (*Nginx, error) {

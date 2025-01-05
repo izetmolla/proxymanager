@@ -18,14 +18,25 @@ type CreateNewProxyHostOptions struct {
 	SSLEnabled     bool
 	SSLType        string
 	ForceHttps     bool
-	HTTP2          bool   `json:"http2"`
-	Hsts           bool   `json:"hsts"`
-	SSLID          string `json:"ssl_id"`
-	SSLKey         string `json:"ssl_key"`
-	SSLCertificate string `json:"ssl_certificate"`
+	HTTP2          bool         `json:"http2"`
+	Hsts           bool         `json:"hsts"`
+	SSLID          string       `json:"ssl_id"`
+	SSLKey         string       `json:"ssl_key"`
+	SSLCertificate string       `json:"ssl_certificate"`
+	SSL            ProxyHostSSL `json:"ssl"`
+	NoReload       bool         `json:"no_reload"`
+
+	EnableNginxIpv6    bool
+	EnableNginxStreams bool
+	NginxIpv4Address   string
+	NginxIpv6Address   string
+	NginxHTTPPort      string
+	NginxHTTPSPort     string
 }
 
 type ProxyHostSSL struct {
+	ID             string `json:"id"`
+	Type           string `json:"type"`
 	Enabled        bool   `json:"enabled"`
 	Certificate    string `json:"certificate"`
 	CertificateKey string `json:"certificate_key"`
@@ -41,6 +52,12 @@ type ProxyHost struct {
 	SslPath      string              `json:"ssl_path"`
 	Domains      []string            `json:"domains"`
 	Locations    []ProxyHostLocation `json:"locations"`
+
+	EnableNginxIpv6  bool   `json:"enableNginxIpv6"`
+	NginxIpv4Address string `json:"nginxIpv4Address"`
+	NginxIpv6Address string `json:"nginxIpv6Address"`
+	NginxHTTPPort    string `json:"nginxHTTPPort"`
+	NginxHTTPSPort   string `json:"nginxHTTPSPort"`
 }
 
 func (ng *Nginx) UpdateProxyHost(options *CreateNewProxyHostOptions) (err error) {
@@ -50,9 +67,7 @@ func (ng *Nginx) UpdateProxyHost(options *CreateNewProxyHostOptions) (err error)
 	hostPath := createProxyHostDirectories(filepath.Join(ng.ConfigPath, "hosts", options.ID))
 	sslPath := createProxyHostSslDirectories(filepath.Join(ng.ConfigPath, "ssl", options.SSLID))
 	if options.SSLEnabled {
-		if options.SSLType == "" {
-			options.SSLType = "auto"
-		}
+		options.SSLType = setStringOnEmpty(options.SSLType, "auto")
 		if options.SSLType == "auto" && !checkForSelfSSL(sslPath, "auto") {
 			_ = generateSelfSSL("ssl", sslPath, ng.SSL.Org)
 		}
@@ -61,12 +76,20 @@ func (ng *Nginx) UpdateProxyHost(options *CreateNewProxyHostOptions) (err error)
 		}
 	}
 
+	fmt.Println("AAAAA: ", options)
+
+	options.EnableNginxIpv6 = setBoolOnEmpty(options.EnableNginxIpv6, ng.EnableNginxIpv6)
+	options.NginxHTTPPort = setStringOnEmpty(options.NginxHTTPPort, ng.NginxHTTPPort)
+	options.NginxHTTPSPort = setStringOnEmpty(options.NginxHTTPSPort, ng.NginxHTTPSPort)
+	options.NginxIpv4Address = setStringOnEmpty(options.NginxIpv4Address, ng.NginxIpv4Address)
+	options.NginxIpv6Address = setStringOnEmpty(options.NginxIpv6Address, ng.NginxIpv6Address)
+
 	_ = backupProxyHostCurrentConfig(hostPath)
 	if err = setProxyPasConfigFile(hostPath, sslPath, options); err != nil {
 		return err
 	}
 
-	err = ng.CheckAndUpdate(options.ID, options.Domains, options.SSLEnabled, "")
+	err = ng.CheckAndUpdate(options.ID, options)
 	if err != nil {
 		if err := deleteFolder(hostPath); err != nil {
 			return err

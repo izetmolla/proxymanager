@@ -245,3 +245,60 @@ func UpdateDomainsByPath(db *gorm.DB, phID string, domains []string) ([]string, 
 
 	return domains, nil
 }
+
+func GetFullProxyHostItems(db *gorm.DB) (res []nginx.CreateNewProxyHostOptions, err error) {
+	hosts := make([]ProxyHost, 0)
+	if err := db.Model(&ProxyHost{}).
+		Preload("Domains").
+		Preload("Locations").
+		Preload("Locations.Properties").
+		Preload("Ssl").
+		Find(&hosts).Error; err != nil {
+		return res, err
+	}
+
+	for _, host := range hosts {
+		res = append(res, nginx.CreateNewProxyHostOptions{
+			ID:         host.ID,
+			Domains:    FormatDomains(host.Domains),
+			Locations:  FormatLocations(host.Locations),
+			SSLEnabled: *host.EnableSSL,
+			SSLType:    host.Ssl.Type,
+			SSLID:      host.SslKeyID,
+			SSL: nginx.ProxyHostSSL{
+				ID:   host.Ssl.ID,
+				Type: host.Ssl.Type,
+			},
+		})
+	}
+	return res, nil
+}
+
+func GetFullProxyHostItem(db *gorm.DB) (res nginx.CreateNewProxyHostOptions, err error) {
+	host := ProxyHost{}
+	if err := db.Model(&ProxyHost{}).
+		Preload("Domains").
+		Preload("Locations").
+		Preload("Locations.Properties").
+		Preload("Ssl").
+		First(&host).Error; err != nil {
+		return res, err
+	}
+	if host.ID == "" {
+		return res, fmt.Errorf("proxy host not found")
+	}
+
+	return nginx.CreateNewProxyHostOptions{
+		ID:         host.ID,
+		Domains:    FormatDomains(host.Domains),
+		Locations:  FormatLocations(host.Locations),
+		SSLEnabled: *host.EnableSSL,
+		SSLType:    host.Ssl.Type,
+		SSLID:      host.SslKeyID,
+		SSL: nginx.ProxyHostSSL{
+			ID:   host.Ssl.ID,
+			Type: host.Ssl.Type,
+		},
+	}, nil
+
+}

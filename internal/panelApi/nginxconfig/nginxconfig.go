@@ -5,6 +5,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/izetmolla/proxymanager/config"
+	"github.com/izetmolla/proxymanager/models"
 	"github.com/izetmolla/proxymanager/nginx"
 	"github.com/izetmolla/proxymanager/utils"
 )
@@ -145,4 +146,13 @@ func SaveGeneralData(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{"data": fiber.Map{}})
+}
+
+func updateAllproxyHosts(server *config.ServerTypes) error {
+	proxyHosts := make([]models.ProxyHost, 0)
+	if err := config.DB.Find(&proxyHosts).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

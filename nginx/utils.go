@@ -182,3 +182,17 @@ func KillProcess(pid int) error {
 	}
 	return nil
 }
+
+func setStringOnEmpty(current, newString string) string {
+	if current == "" {
+		return newString
+	}
+	return current
+}
+
+func setBoolOnEmpty(current, bewBool bool) bool {
+	if !current {
+		return bewBool
+	}
+	return current
+}
