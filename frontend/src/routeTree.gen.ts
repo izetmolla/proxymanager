@@ -62,6 +62,9 @@ const AuthenticatedAccountIndexLazyImport = createFileRoute(
 const AuthenticatedAccessListIndexLazyImport = createFileRoute(
   '/_authenticated/access-list/',
 )()
+const AuthenticatedNginxSettingsMainfileEditLazyImport = createFileRoute(
+  '/_authenticated/nginx-settings/mainfile-edit',
+)()
 const AuthenticatedSslManagerIdIndexLazyImport = createFileRoute(
   '/_authenticated/ssl-manager/$id/',
 )()
@@ -236,6 +239,17 @@ const AuthenticatedAccessListIndexLazyRoute =
     ),
   )
 
+const AuthenticatedNginxSettingsMainfileEditLazyRoute =
+  AuthenticatedNginxSettingsMainfileEditLazyImport.update({
+    id: '/nginx-settings/mainfile-edit',
+    path: '/nginx-settings/mainfile-edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any).lazy(() =>
+    import('./routes/_authenticated/nginx-settings/mainfile-edit.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
 const AuthenticatedSslManagerIdIndexLazyRoute =
   AuthenticatedSslManagerIdIndexLazyImport.update({
     id: '/ssl-manager/$id/',
@@ -298,6 +312,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedIndexImport
+      parentRoute: typeof AuthenticatedRouteImport
+    }
+    '/_authenticated/nginx-settings/mainfile-edit': {
+      id: '/_authenticated/nginx-settings/mainfile-edit'
+      path: '/nginx-settings/mainfile-edit'
+      fullPath: '/nginx-settings/mainfile-edit'
+      preLoaderRoute: typeof AuthenticatedNginxSettingsMainfileEditLazyImport
       parentRoute: typeof AuthenticatedRouteImport
     }
     '/_authenticated/access-list/': {
@@ -412,6 +433,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
+  AuthenticatedNginxSettingsMainfileEditLazyRoute: typeof AuthenticatedNginxSettingsMainfileEditLazyRoute
   AuthenticatedAccessListIndexLazyRoute: typeof AuthenticatedAccessListIndexLazyRoute
   AuthenticatedAccountIndexLazyRoute: typeof AuthenticatedAccountIndexLazyRoute
   AuthenticatedApiSettingsIndexLazyRoute: typeof AuthenticatedApiSettingsIndexLazyRoute
@@ -431,6 +453,8 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
+  AuthenticatedNginxSettingsMainfileEditLazyRoute:
+    AuthenticatedNginxSettingsMainfileEditLazyRoute,
   AuthenticatedAccessListIndexLazyRoute: AuthenticatedAccessListIndexLazyRoute,
   AuthenticatedAccountIndexLazyRoute: AuthenticatedAccountIndexLazyRoute,
   AuthenticatedApiSettingsIndexLazyRoute:
@@ -466,6 +490,7 @@ export interface FileRoutesByFullPath {
   '/setup': typeof authSetupRoute
   '/sign-in': typeof authSignInRoute
   '/': typeof AuthenticatedIndexRoute
+  '/nginx-settings/mainfile-edit': typeof AuthenticatedNginxSettingsMainfileEditLazyRoute
   '/access-list': typeof AuthenticatedAccessListIndexLazyRoute
   '/account': typeof AuthenticatedAccountIndexLazyRoute
   '/api-settings': typeof AuthenticatedApiSettingsIndexLazyRoute
@@ -489,6 +514,7 @@ export interface FileRoutesByTo {
   '/setup': typeof authSetupRoute
   '/sign-in': typeof authSignInRoute
   '/': typeof AuthenticatedIndexRoute
+  '/nginx-settings/mainfile-edit': typeof AuthenticatedNginxSettingsMainfileEditLazyRoute
   '/access-list': typeof AuthenticatedAccessListIndexLazyRoute
   '/account': typeof AuthenticatedAccountIndexLazyRoute
   '/api-settings': typeof AuthenticatedApiSettingsIndexLazyRoute
@@ -514,6 +540,7 @@ export interface FileRoutesById {
   '/(auth)/setup': typeof authSetupRoute
   '/(auth)/sign-in': typeof authSignInRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
+  '/_authenticated/nginx-settings/mainfile-edit': typeof AuthenticatedNginxSettingsMainfileEditLazyRoute
   '/_authenticated/access-list/': typeof AuthenticatedAccessListIndexLazyRoute
   '/_authenticated/account/': typeof AuthenticatedAccountIndexLazyRoute
   '/_authenticated/api-settings/': typeof AuthenticatedApiSettingsIndexLazyRoute
@@ -540,6 +567,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/sign-in'
     | '/'
+    | '/nginx-settings/mainfile-edit'
     | '/access-list'
     | '/account'
     | '/api-settings'
@@ -562,6 +590,7 @@ export interface FileRouteTypes {
     | '/setup'
     | '/sign-in'
     | '/'
+    | '/nginx-settings/mainfile-edit'
     | '/access-list'
     | '/account'
     | '/api-settings'
@@ -585,6 +614,7 @@ export interface FileRouteTypes {
     | '/(auth)/setup'
     | '/(auth)/sign-in'
     | '/_authenticated/'
+    | '/_authenticated/nginx-settings/mainfile-edit'
     | '/_authenticated/access-list/'
     | '/_authenticated/account/'
     | '/_authenticated/api-settings/'
@@ -640,6 +670,7 @@ export const routeTree = rootRoute
       "filePath": "_authenticated/route.tsx",
       "children": [
         "/_authenticated/",
+        "/_authenticated/nginx-settings/mainfile-edit",
         "/_authenticated/access-list/",
         "/_authenticated/account/",
         "/_authenticated/api-settings/",
@@ -671,6 +702,10 @@ export const routeTree = rootRoute
     },
     "/_authenticated/": {
       "filePath": "_authenticated/index.tsx",
+      "parent": "/_authenticated"
+    },
+    "/_authenticated/nginx-settings/mainfile-edit": {
+      "filePath": "_authenticated/nginx-settings/mainfile-edit.lazy.tsx",
       "parent": "/_authenticated"
     },
     "/_authenticated/access-list/": {

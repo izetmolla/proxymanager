@@ -91,7 +91,7 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
     const dispatch = useAppDispatch();
     const server = data?.data?.server;
     const ips = data?.data?.ips ?? [];
-    const [step, setStep] = useState(server?.step ?? 0);
+    const [step, setStep] = useState(server?.step ?? data?.data?.step ?? 0);
     const [loadingApply, setLoadingApply] = useState(false);
     const [checkingIp, setCheckingIp] = useState("");
     const { toast } = useToast();
@@ -319,61 +319,77 @@ export const SetupStepsForm: FC<SetupStepsFormProps> = ({ data }) => {
                 </CardHeader>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <CardContent className="space-y-4">
-                            {step === 0 && <GeneralStep data={data} />}
-                            {step === 1 && <SecretsStep />}
-                            {step === 2 && <NginxStep groupedIps={data?.data.groupedIps} />}
-                            {step === 3 && <ApplyStep ips={data?.data.ips.map(x => x.value)} defaultAddress={server?.address} defaultPort={server?.port} />}
-                            {step === 4 && <CreateUserStep />}
+                        {data?.data?.onlyCreateUser ? (
+                            <>
+                                <CardContent className="space-y-4">
+                                    <CreateUserStep />
+                                </CardContent>
+                                <CardFooter className="flex justify-between items-right">
+                                    <Button type="submit">
+                                        Create User
+                                        <ChevronRight className="ml-2 h-4 w-4" />
+                                    </Button>
+                                </CardFooter>
+                            </>
+                        ) : (
+                            <>
+                                <CardContent className="space-y-4">
+                                    {step === 0 && <GeneralStep data={data} />}
+                                    {step === 1 && <SecretsStep />}
+                                    {step === 2 && <NginxStep groupedIps={data?.data.groupedIps} />}
+                                    {step === 3 && <ApplyStep ips={data?.data.ips.map(x => x.value)} defaultAddress={server?.address} defaultPort={server?.port} />}
+                                    {step === 4 && <CreateUserStep />}
 
-                            {step === 3 && (
-                                <>
-                                    {checkingIp && (
+                                    {step === 3 && (
                                         <>
-                                            <div className="flex flex-row items-center space-x-2">
-                                                <Loader2 className="animate-spin" />
-                                                <span>Checking health status for {checkingIp}</span>
-                                            </div>
+                                            {checkingIp && (
+                                                <>
+                                                    <div className="flex flex-row items-center space-x-2">
+                                                        <Loader2 className="animate-spin" />
+                                                        <span>Checking health status for {checkingIp}</span>
+                                                    </div>
+                                                </>
+                                            )}
                                         </>
                                     )}
-                                </>
-                            )}
-                        </CardContent>
-                        <CardFooter className="flex justify-between">
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={() => setStep((s) => s - 1)}
-                                disabled={step === 0}
-                            >
-                                <ChevronLeft className="mr-2 h-4 w-4" />
-                                Previous
-                            </Button>
-                            {step === STEPS.length - 1 ? (
-                                <Button type="submit">
-                                    Finish Setup
-                                    <Check className="ml-2 h-4 w-4" />
-                                </Button>
-                            ) : step == 3 ? (
-                                <Button type="button" onClick={() => applyChanges()} disabled={loadingApply}>
-                                    {loadingApply && <Loader2 className="animate-spin" />}  Apply Changes
-                                    <ChevronRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            ) : step == 4 ? (
-                                <Button type="submit">
-                                    Create User
-                                    <ChevronRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            ) : (
-                                <Button type="submit">
-                                    Next
-                                    <ChevronRight className="ml-2 h-4 w-4" />
-                                </Button>
-                            )}
-                        </CardFooter>
+                                </CardContent>
+                                <CardFooter className="flex justify-between">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={() => setStep((s) => s - 1)}
+                                        disabled={step === 0}
+                                    >
+                                        <ChevronLeft className="mr-2 h-4 w-4" />
+                                        Previous
+                                    </Button>
+                                    {step === STEPS.length - 1 ? (
+                                        <Button type="submit">
+                                            Finish Setup
+                                            <Check className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    ) : step == 3 ? (
+                                        <Button type="button" onClick={() => applyChanges()} disabled={loadingApply}>
+                                            {loadingApply && <Loader2 className="animate-spin" />}  Apply Changes
+                                            <ChevronRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    ) : step == 4 ? (
+                                        <Button type="submit">
+                                            Create User
+                                            <ChevronRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    ) : (
+                                        <Button type="submit">
+                                            Next
+                                            <ChevronRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    )}
+                                </CardFooter>
+                            </>
+                        )}
                     </form>
                 </Form>
             </Card>
-        </div>
+        </div >
     );
 }

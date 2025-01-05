@@ -88,11 +88,19 @@ export const sidebarData: SidebarData = {
                     icon: IconMailCog,
                 },
                 {
-                    title: 'Nginx Config Settings',
-                    url: '/nginx-settings',
+                    title: 'Nginx Settings',
                     icon: SiNginx,
+                    items: [
+                        {
+                            title: 'General',
+                            url: '/nginx-settings',
+                        },
+                        {
+                            title: 'Main File Editor',
+                            url: '/nginx-settings/mainfile-edit',
+                        },
+                    ]
                 },
-
                 {
                     title: 'Static Files',
                     url: '/templates',

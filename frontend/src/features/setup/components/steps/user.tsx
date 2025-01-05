@@ -34,7 +34,7 @@ export const CreateUserStep= () => {
                 name="email"
                 render={({ field }) => (
                     <FormItem>
-                        <FormLabel>Name</FormLabel>
+                        <FormLabel>Email</FormLabel>
                         <FormControl>
                             <Input placeholder="johndoe@gmail.com" {...field} />
                         </FormControl>

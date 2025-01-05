@@ -11,14 +11,17 @@ import (
 )
 
 func GetData(c *fiber.Ctx) error {
-
 	server, err := config.GetServer()
 	if err != nil {
 		return c.JSON(utils.Em(err))
 	}
-	if server.Setup {
+	if server.Setup && server.FirstUser {
 		return c.JSON(utils.Em(fmt.Errorf("server already setup")))
 	}
+	if server.Setup && !server.FirstUser {
+		return c.JSON(fiber.Map{"data": fiber.Map{"step": 4, "onlyCreateUser": true}})
+	}
+
 	ips := make([]map[string]interface{}, 0)
 
 	privateIps, err := utils.GetIpAddressesList()

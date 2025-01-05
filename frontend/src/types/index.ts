@@ -42,3 +42,8 @@ export interface CreateRequestTypes<T> {
 }
 
 
+export interface GetRequestTypes<T> {
+    error: ResponseError;
+    data: T;
+}
+

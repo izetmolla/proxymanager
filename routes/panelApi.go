@@ -20,13 +20,14 @@ func handlePanelAPI(app *fiber.App, server *config.ServerTypes) *fiber.App {
 	app.Post("/panelapi/sign-in", authorization.SignIn)
 	app.Post("/panelapi/refresh_token", authorization.GetRefreshToken)
 	if !server.Setup {
-		app.Get("/panelapi/setup/getdata", setupApp.GetData)
+		// app.Get("/panelapi/setup/getdata", setupApp.GetData)
 		app.Post("/panelapi/setup/save", setupApp.SaveData)
 		app.Post("/panelapi/setup/apply", setupApp.Apply)
 	}
 
 	if !server.FirstUser {
 		app.Post("/panelapi/setup/createuser", setupApp.CreateFirstUser)
+		app.Get("/panelapi/setup/getdata", setupApp.GetData)
 	}
 
 	api := app.Group("/panelapi")
@@ -52,6 +53,8 @@ func handlePanelAPI(app *fiber.App, server *config.ServerTypes) *fiber.App {
 	api.Get("/nginxconfig/getdata", nginxconfig.GetNginxConfigData)
 	api.Post("/nginxconfig/save", nginxconfig.SaveNginxConfigFile)
 	api.Get("/nginxconfig/restart", nginxconfig.RestartNginx)
+	api.Get("/nginxconfig/general", nginxconfig.General)
+	api.Post("/nginxconfig/savegeneral", nginxconfig.SaveGeneralData)
 
 	api.Get("/ssl/getdata", sslkeys.GetSslKeysList)
 	api.Post("/ssl/create", sslkeys.CreateSslKey)

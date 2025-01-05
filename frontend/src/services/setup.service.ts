@@ -51,6 +51,8 @@ export interface GetSetupDataResponse {
     }
     finished: boolean
     redirect: boolean
+    step: number
+    onlyCreateUser: boolean
 }
 
 export async function getSetupData() {

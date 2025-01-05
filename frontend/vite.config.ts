@@ -13,7 +13,7 @@ const htmlPlugin = () => {
     transformIndexHtml(html: string) {
       return html.replace(
         "[[globalOptions]]",
-        `{"setup": false, "credentialsLogin": true, "googleLogin": false, "githubLogin": false}`,
+        `{"setup": true, "credentialsLogin": true, "googleLogin": false, "githubLogin": false, "firstUser": true}`,
       )
     },
   }
