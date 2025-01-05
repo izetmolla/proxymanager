@@ -14,7 +14,7 @@ import GeneralError from '@/features/errors/general-error'
 
 export const Route = createFileRoute('/_authenticated')({
   beforeLoad: ({ context }) => {
-    if (!context?.setup && window.location.pathname !== '/setup') {
+    if ((!context?.setup || !context.firstUser) && window.location.pathname !== '/setup') {
       throw redirect({ to: "/setup" });
     }
     if (!context.auth?.signedIn) {

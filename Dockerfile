@@ -58,7 +58,7 @@ RUN chmod +x /etc/proxymanager/proxymanager
 RUN ln -s /etc/proxymanager/proxymanager /usr/local/bin/proxymanager
 
 # Add NGINX configuration (optional, you can use your own configuration here)
-# COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Add a startup script
 COPY start.sh /start.sh

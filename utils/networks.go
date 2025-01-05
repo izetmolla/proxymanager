@@ -90,3 +90,28 @@ func GetPublicIpAddress() (string, error) {
 func IsValidIp(ip string) bool {
 	return net.ParseIP(ip) != nil
 }
+
+func GroupIpAddressesByType(ipAddresses []map[string]interface{}) map[string][]map[string]interface{} {
+	groupedIps := make(map[string][]map[string]interface{})
+	groupedIps["ipv4"] = []map[string]interface{}{}
+	groupedIps["ipv6"] = []map[string]interface{}{}
+
+	for _, ipAddress := range ipAddresses {
+		ipMap, ok := ipAddress["value"].(string)
+		if !ok {
+			continue
+		}
+		ip := net.ParseIP(ipMap)
+		if ip == nil {
+			continue
+		}
+
+		if ip.To4() != nil {
+			groupedIps["ipv4"] = append(groupedIps["ipv4"], map[string]interface{}{"value": ipMap, "label": ipAddress["label"]})
+		} else {
+			groupedIps["ipv6"] = append(groupedIps["ipv6"], map[string]interface{}{"value": ipMap, "label": ipAddress["label"]})
+		}
+	}
+
+	return groupedIps
+}

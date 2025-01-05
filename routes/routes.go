@@ -18,6 +18,7 @@ func NewHandler(db *gorm.DB, server *config.ServerTypes) (*fiber.App, error) {
 	app := fiber.New()
 	app.All("/", handleIndex)
 	app.Get("/health", func(c *fiber.Ctx) error {
+		c.Set("Access-Control-Allow-Origin", "*") // Allow all origins for /health
 		return c.JSON(fiber.Map{"status": "OK"})
 	})
 	app.Get("/download.php", downloaddata.Download)

@@ -15,6 +15,7 @@ func GetGlobalOptions() string {
 		"googleLogin":      false,
 		"githubLogin":      false,
 		"credentialsLogin": server.CredentialsLogin,
+		"firstUser":        server.FirstUser,
 	}
 	if server.EnableSocialAuth {
 		if server.GoogleKey != "" && server.GoogleSecret != "" && server.GoogleCallback != "" {

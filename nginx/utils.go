@@ -9,6 +9,7 @@ import (
 	"os/exec"
 	"path/filepath"
 	"strings"
+	"syscall"
 	"time"
 )
 
@@ -147,4 +148,37 @@ func randomString(length int) string {
 		b[i] = charset[seededRand.Intn(len(charset))]
 	}
 	return string(b)
+}
+
+func FindProcessByName(name string) []int {
+	cmd := exec.Command("pgrep", name) // Use 'pgrep' to find processes by name
+	var out bytes.Buffer
+	cmd.Stdout = &out
+
+	if err := cmd.Run(); err != nil {
+		return nil
+	}
+
+	// Parse PIDs from the output
+	lines := strings.Split(strings.TrimSpace(out.String()), "\n")
+	pids := []int{}
+	for _, line := range lines {
+		var pid int
+		fmt.Sscanf(line, "%d", &pid)
+		pids = append(pids, pid)
+	}
+
+	return pids
+}
+
+func KillProcess(pid int) error {
+	proc, err := os.FindProcess(pid)
+	if err != nil {
+		return err
+	}
+	if err := proc.Signal(syscall.SIGKILL); err != nil {
+		fmt.Printf("Failed to kill process with PID %d: %v\n", pid, err)
+		return err
+	}
+	return nil
 }

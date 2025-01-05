@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/izetmolla/proxymanager/config"
+	"github.com/izetmolla/proxymanager/nginx"
 	"github.com/spf13/pflag"
 )
 
@@ -44,7 +45,7 @@ func setOnEmptyString(val, def string) string {
 	return val
 }
 
-func getRunParams(flags *pflag.FlagSet) *config.ServerTypes {
+func getRunParams(flags *pflag.FlagSet) (*config.ServerTypes, error) {
 	server, err := config.GetServer()
 	checkErr(err)
 
@@ -58,6 +59,18 @@ func getRunParams(flags *pflag.FlagSet) *config.ServerTypes {
 		server.Port = val
 	} else {
 		server.Port = setOnEmptyString(server.Port, "81")
+	}
+
+	if val, set := getParamB(flags, "config_path"); set {
+		server.ConfigPath = val
+	} else {
+		server.ConfigPath = setOnEmptyString(server.ConfigPath, nginx.ConfigPath)
+	}
+
+	if val, set := getParamB(flags, "logs_path"); set {
+		server.LogsPath = val
+	} else {
+		server.LogsPath = setOnEmptyString(server.LogsPath, nginx.LogsPath)
 	}
 
 	if val, set := getParamB(flags, "access_token_secret"); set {
@@ -140,8 +153,11 @@ func getRunParams(flags *pflag.FlagSet) *config.ServerTypes {
 		server.CredentialsLogin = setOnEmptyString("", "true") == "true"
 	}
 
-	_, _ = config.SetServer(*server)
-	return server
+	server, err = config.SetServer(*server)
+	if err != nil {
+		return server, err
+	}
+	return server, nil
 
 }
 func randomString(length int) string {

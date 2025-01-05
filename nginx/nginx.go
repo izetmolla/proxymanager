@@ -32,24 +32,35 @@ type Nginx struct {
 	MainFilePath    string
 	LogsPath        string
 	EnableStreams   bool
-	EnableIpv6      bool
 	ConfigExtension string
 	SSL             *SSL
+
+	EnableNginxIpv6    bool   `json:"enableNginxIpv6"`
+	EnableNginxStreams bool   `json:"enableNginxStreams"`
+	NginxIpv4Address   string `json:"nginxIpv4Address"`
+	NginxIpv6Address   string `json:"nginxIpv6Address"`
+	NginxHTTPPort      string `json:"nginxHTTPPort"`
+	NginxHTTPSPort     string `json:"nginxHTTPSPort"`
 }
 
 type NginxInitOptions struct {
-	NginxPath         string
-	ConfigPath        string
-	StaticFilesPath   string
-	LogsPath          string
-	ConfigExtension   string
-	EnableStreams     bool
-	EnableIpv6        bool
-	IsNginxConfigured bool
-	SSL               *SSL
-	MainFileDB        bool
-	File404DB         bool
-	File500DB         bool
+	NginxPath       string
+	ConfigPath      string
+	StaticFilesPath string
+	LogsPath        string
+	ConfigExtension string
+	EnableStreams   bool
+	SSL             *SSL
+	MainFileDB      bool
+	File404DB       bool
+	File500DB       bool
+
+	EnableNginxIpv6    bool   `json:"enableNginxIpv6"`
+	EnableNginxStreams bool   `json:"enableNginxStreams"`
+	NginxIpv4Address   string `json:"nginxIpv4Address"`
+	NginxIpv6Address   string `json:"nginxIpv6Address"`
+	NginxHTTPPort      string `json:"nginxHTTPPort"`
+	NginxHTTPSPort     string `json:"nginxHTTPSPort"`
 }
 
 func Open(opt *NginxInitOptions) (*Nginx, error) {
@@ -76,7 +87,14 @@ func Open(opt *NginxInitOptions) (*Nginx, error) {
 	ng.EnableStreams = opt.EnableStreams
 	ng.ConfigExtension = opt.ConfigExtension
 	ng.MainFilePath = filepath.Join(ng.ConfigPath, "main.conf")
-	ng.EnableIpv6 = opt.EnableIpv6
+
+	ng.EnableNginxIpv6 = opt.EnableNginxIpv6
+	ng.EnableNginxStreams = opt.EnableNginxStreams
+	ng.NginxIpv4Address = opt.NginxIpv4Address
+	ng.NginxIpv6Address = opt.NginxIpv6Address
+	ng.NginxHTTPPort = opt.NginxHTTPPort
+	ng.NginxHTTPSPort = opt.NginxHTTPSPort
+
 	if err = makeDirectories(ng.LogsPath); err != nil {
 		return &ng, err
 	}
@@ -105,20 +123,26 @@ func Open(opt *NginxInitOptions) (*Nginx, error) {
 
 	if err := SaveNginxDefaultsTemplate(&NginxDefaultsTemplateTypes{
 		Disabled:   false,
-		EnableIpv6: ng.EnableIpv6,
 		ConfigPath: ng.ConfigPath,
 		LogsPath:   ng.LogsPath,
+
+		EnableNginxIpv6:    ng.EnableNginxIpv6,
+		EnableNginxStreams: ng.EnableNginxStreams,
+		NginxIpv4Address:   ng.NginxIpv4Address,
+		NginxIpv6Address:   ng.NginxIpv6Address,
+		NginxHTTPPort:      ng.NginxHTTPPort,
+		NginxHTTPSPort:     ng.NginxHTTPSPort,
 	}, filepath.Join(ng.NginxPath, "conf.d", "default.conf")); err != nil {
 		return &ng, err
 	}
 
 	if !opt.MainFileDB {
 		if err := SaveNginxMainFileTemplate(&NginxMainFileTemplateTypes{
-			NginxPath:     ng.NginxPath,
-			ConfigPath:    ng.ConfigPath,
-			LogsPath:      ng.LogsPath,
-			EnableIpv6:    ng.EnableIpv6,
-			EnableStreams: ng.EnableStreams,
+			NginxPath:       ng.NginxPath,
+			ConfigPath:      ng.ConfigPath,
+			LogsPath:        ng.LogsPath,
+			EnableNginxIpv6: ng.EnableNginxIpv6,
+			EnableStreams:   ng.EnableStreams,
 		}); err != nil {
 			return &ng, err
 		}

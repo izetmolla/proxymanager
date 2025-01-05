@@ -13,6 +13,7 @@ export const Route = createRootRouteWithContext<{
   queryClient: QueryClient
   auth?: AuthState | null
   setup: boolean
+  firstUser: boolean
 }>()({
   component: () => {
     return (

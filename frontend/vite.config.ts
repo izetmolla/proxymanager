@@ -38,6 +38,10 @@ export default defineConfig(({ mode }) => {
           target: 'http://localhost:81',
           changeOrigin: true,
         },
+        '/health': {
+          target: 'http://localhost:81',
+          changeOrigin: true,
+        },
         '/panelapi': {
           target: 'http://localhost:81',
           changeOrigin: true,
@@ -47,12 +51,13 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           ws: true,
         },
+
       },
     },
     plugins: [
       TanStackRouterVite(),
       viteReact(),
-      isDev &&  htmlPlugin()
+      isDev && htmlPlugin()
     ],
     resolve: {
       alias: {

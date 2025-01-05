@@ -5,11 +5,11 @@ import (
 )
 
 type NginxMainFileTemplateTypes struct {
-	NginxPath     string `json:"nginx_path"`
-	ConfigPath    string `json:"config_path"`
-	LogsPath      string `json:"logs_path"`
-	EnableIpv6    bool   `json:"enable_ipv6"`
-	EnableStreams bool   `json:"enable_streams"`
+	NginxPath       string `json:"nginx_path"`
+	ConfigPath      string `json:"config_path"`
+	LogsPath        string `json:"logs_path"`
+	EnableNginxIpv6 bool   `json:"enable_ipv6"`
+	EnableStreams   bool   `json:"enable_streams"`
 }
 
 func SaveNginxMainFileTemplate(data *NginxMainFileTemplateTypes) error {
@@ -23,9 +23,15 @@ type NginxDefaultsTemplateTypes struct {
 	LogsPath   string `json:"logs_path"`
 	ConfigPath string `json:"config_path"`
 	Disabled   bool   `json:"disabled"`
-	EnableIpv6 bool   `json:"enable_ipv6"`
 	NoRespone  bool   `json:"no_respone"`
 	RedirectTo string `json:"redirect_to"`
+
+	EnableNginxIpv6    bool   `json:"enableNginxIpv6"`
+	EnableNginxStreams bool   `json:"enableNginxStreams"`
+	NginxIpv4Address   string `json:"nginxIpv4Address"`
+	NginxIpv6Address   string `json:"nginxIpv6Address"`
+	NginxHTTPPort      string `json:"nginxHTTPPort"`
+	NginxHTTPSPort     string `json:"nginxHTTPSPort"`
 }
 
 func SaveNginxDefaultsTemplate(data *NginxDefaultsTemplateTypes, filePath string) error {

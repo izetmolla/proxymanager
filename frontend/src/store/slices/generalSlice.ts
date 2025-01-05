@@ -18,6 +18,7 @@ export type GeneralState = {
     githubLogin: boolean;
     googleLogin: boolean;
     setup: boolean;
+    firstUser: boolean;
 };
 
 const initialState: GeneralState = {
@@ -25,6 +26,7 @@ const initialState: GeneralState = {
     githubLogin: false,
     googleLogin: false,
     setup: false,
+    firstUser: false,
     ...window.globalOptions
 };
 
@@ -37,13 +39,17 @@ export const generalSlice = createSlice({
         },
         setSetup: (state, action: PayloadAction<boolean>) => {
             state.setup = action.payload;
+        },
+        setFirstUser: (state, action: PayloadAction<boolean>) => {
+            state.firstUser = action.payload;
         }
     },
 });
 
 export const {
     setCredentialsLogin,
-    setSetup
+    setSetup,
+    setFirstUser
 } = generalSlice.actions;
 
 export default generalSlice.reducer;

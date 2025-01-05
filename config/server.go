@@ -31,10 +31,18 @@ type ServerTypes struct {
 	GithubCallback   string `json:"github_callback"`
 	CredentialsLogin bool   `json:"credentials_login"`
 
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Email    string `json:"email"`
-	Name     string `json:"name"`
+	//NgincConfig
+	ConfigPath         string `json:"configPath"`
+	LogsPath           string `json:"logsPath"`
+	EnableNginxIpv6    bool   `json:"enableNginxIpv6"`
+	EnableNginxStreams bool   `json:"enableNginxStreams"`
+	NginxIpv4Address   string `json:"nginxIpv4Address"`
+	NginxIpv6Address   string `json:"nginxIpv6Address"`
+	NginxHTTPPort      string `json:"nginxHTTPPort"`
+	NginxHTTPSPort     string `json:"nginxHTTPSPort"`
+
+	// Credentials
+	FirstUser bool `json:"first_user"`
 }
 
 var server *ServerTypes
@@ -46,6 +54,8 @@ func SetServer(newParams ServerTypes) (*ServerTypes, error) {
 		server.Setup = newParams.Setup
 		server.Address = newParams.Address
 		server.Port = newParams.Port
+		server.BaseUrl = newParams.BaseUrl
+		//secrets
 		server.AccessTokenSecret = newParams.AccessTokenSecret
 		server.RefreshTokenSecret = newParams.RefreshTokenSecret
 		server.AccessTokenExp = newParams.AccessTokenExp
@@ -58,6 +68,14 @@ func SetServer(newParams ServerTypes) (*ServerTypes, error) {
 		server.GithubSecret = newParams.GithubSecret
 		server.GithubCallback = newParams.GithubCallback
 		server.CredentialsLogin = newParams.CredentialsLogin
+		//NginxConfig
+		server.FirstUser = newParams.FirstUser
+		server.NginxHTTPPort = newParams.NginxHTTPPort
+		server.NginxHTTPSPort = newParams.NginxHTTPSPort
+		server.EnableNginxIpv6 = newParams.EnableNginxIpv6
+		server.EnableNginxStreams = newParams.EnableNginxStreams
+		server.NginxIpv4Address = newParams.NginxIpv4Address
+		server.NginxIpv6Address = newParams.NginxIpv6Address
 	}
 	st, err := serverTypesToString(server)
 	if err != nil {

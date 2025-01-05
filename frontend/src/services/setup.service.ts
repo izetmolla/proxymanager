@@ -9,7 +9,11 @@ import { StepsFormData } from "@/features/setup/components/steps-form";
 
 export interface GetSetupDataResponse {
     ips: { value: string, label: string }[]
-    user:{
+    groupedIps: {
+        ipv4: { value: string, label: string }[]
+        ipv6: { value: string, label: string }[]
+    },
+    user: {
         email: string
         username: string
         name: string
@@ -38,7 +42,15 @@ export interface GetSetupDataResponse {
         github_key: string
         github_secret: string
         github_callback: string
+        enableNginxIpv6: boolean
+        enableNginxStreams: boolean
+        nginxIpv4Address: string
+        nginxIpv6Address: string
+        nginxHTTPPort: string
+        nginxHTTPSPort: string
     }
+    finished: boolean
+    redirect: boolean
 }
 
 export async function getSetupData() {
@@ -53,5 +65,21 @@ export async function saveSetupData(data: StepsFormData, step: number) {
         url: '/setup/save',
         method: 'post',
         data: { ...data, step },
+    })
+}
+
+export async function applySetupData({ ipAddress, port }: { ipAddress: string, port: string }) {
+    return ApiService.fetchData<CreateRequestTypes<GetSetupDataResponse>>({
+        url: '/setup/apply',
+        method: 'post',
+        data: { ipAddress, port },
+    })
+}
+
+export async function createFirstUser(data: StepsFormData) {
+    return ApiService.fetchData<CreateRequestTypes<GetSetupDataResponse>>({
+        url: '/setup/createuser',
+        method: 'post',
+        data,
     })
 }

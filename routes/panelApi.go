@@ -20,10 +20,15 @@ func handlePanelAPI(app *fiber.App, server *config.ServerTypes) *fiber.App {
 	app.Post("/panelapi/sign-in", authorization.SignIn)
 	app.Post("/panelapi/refresh_token", authorization.GetRefreshToken)
 	if !server.Setup {
-		app.Post("/panelapi/setup/init", setupApp.InitSetup)
 		app.Get("/panelapi/setup/getdata", setupApp.GetData)
 		app.Post("/panelapi/setup/save", setupApp.SaveData)
+		app.Post("/panelapi/setup/apply", setupApp.Apply)
 	}
+
+	if !server.FirstUser {
+		app.Post("/panelapi/setup/createuser", setupApp.CreateFirstUser)
+	}
+
 	api := app.Group("/panelapi")
 	api.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{"status": "OK"})

@@ -14,7 +14,7 @@ const queryClient = new QueryClient()
 // Create a new router instance
 const router = createRouter({
     routeTree,
-    context: { queryClient, auth: null, setup: false },
+    context: { queryClient, auth: null, setup: false, firstUser: false },
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
 })
@@ -27,11 +27,11 @@ declare module '@tanstack/react-router' {
 }
 function App() {
     const auth = useAppSelector(x => x.auth);
-    const setup = useAppSelector(x => x.general.setup);
+    const { setup, firstUser } = useAppSelector(x => x.general);
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider defaultTheme='light' storageKey='vite-ui-theme'>
-                <RouterProvider router={router} context={{ auth, setup }} />
+                <RouterProvider router={router} context={{ auth, setup, firstUser }} />
             </ThemeProvider>
         </QueryClientProvider>
     )

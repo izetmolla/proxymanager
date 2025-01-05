@@ -60,9 +60,9 @@ var rootCmd = &cobra.Command{
 	Short: "A stylish web-based ProxyManager",
 	Long:  `ProxyManager is a stylish web-based application for managing proxy,loadbalancing and streaming using Nginx.`,
 	Run: initApp(func(cmd *cobra.Command, _ []string, d initData) {
-		server := getRunParams(cmd.Flags())
-		adr := server.Address + ":" + server.Port
-		app, err := routes.NewHandler(d.db, server)
+
+		adr := d.server.Address + ":" + d.server.Port
+		app, err := routes.NewHandler(d.db, d.server)
 
 		checkErr(err)
 		if err := app.Listen(adr); err != nil {
@@ -78,6 +78,7 @@ type initData struct {
 	db         *gorm.DB
 	nginx      *nginx.Nginx
 	configured bool
+	server     *config.ServerTypes
 }
 
 func initApp(fn pythonFunc) cobraFunc {
@@ -89,16 +90,27 @@ func initApp(fn pythonFunc) cobraFunc {
 			Logger: logger.Discard,
 		})
 		checkErr(err)
-		lco, err := config.LoadConfig(data.db)
+		data.server, err = getRunParams(cmd.Flags())
 		checkErr(err)
-		data.nginx, err = config.InitNginx(&nginx.NginxInitOptions{
-			ConfigPath:        "/etc/proxymanager/data",
-			LogsPath:          "/etc/proxymanager/logs",
-			ConfigExtension:   "json",
-			IsNginxConfigured: config.IsNginxConfigured(data.db),
-			MainFileDB:        lco.MainFileDB,
-		}, data.db)
-		checkErr(err)
+		if data.server.Setup {
+			lco, err := config.LoadConfig(data.db)
+			checkErr(err)
+			data.nginx, err = config.InitNginx(&nginx.NginxInitOptions{
+				ConfigPath:      data.server.ConfigPath,
+				LogsPath:        data.server.LogsPath,
+				ConfigExtension: "json",
+				MainFileDB:      lco.MainFileDB,
+
+				EnableNginxIpv6:    data.server.EnableNginxIpv6,
+				EnableNginxStreams: data.server.EnableNginxStreams,
+				NginxIpv4Address:   data.server.NginxIpv4Address,
+				NginxIpv6Address:   data.server.NginxIpv6Address,
+				NginxHTTPPort:      data.server.NginxHTTPPort,
+				NginxHTTPSPort:     data.server.NginxHTTPSPort,
+			}, data.db)
+			checkErr(err)
+			data.configured = true
+		}
 		err = config.InitSocialAuth(data.db)
 		checkErr(err)
 		fn(cmd, args, data)
